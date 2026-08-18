@@ -15,17 +15,18 @@ button,input,textarea,select{font:inherit} button{border:1px solid var(--border2
 #app{height:100%;display:grid;grid-template-rows:56px 1fr}
 .topbar{display:flex;align-items:center;gap:8px;padding:0 12px;border-bottom:1px solid var(--border);background:#0d151f;z-index:20}
 .brand{font-weight:700;letter-spacing:.3px;margin-right:10px}.brand small{display:block;font-weight:400;color:var(--muted);font-size:10px}
-.topbar .spacer{flex:1}.status{font-size:12px;color:var(--muted);padding:0 8px}.btn-icon{width:34px;padding:7px 0}
+.topbar .spacer{flex:1}.status{font-size:12px;color:var(--muted);padding:0 8px}.selection-box{position:absolute;display:none;border:1px dashed var(--accent);background:rgba(92,179,255,.10);pointer-events:none;z-index:8}.selection-box.show{display:block}.canvas-help-badge{position:absolute;right:12px;top:12px;padding:6px 9px;border:1px solid var(--border);background:rgba(17,26,36,.86);border-radius:8px;color:var(--muted);font-size:10px;z-index:5}.btn-icon{width:34px;padding:7px 0}
 .main{min-height:0;display:grid;grid-template-columns:250px minmax(0,1fr) 300px}
 .sidebar,.inspector{background:var(--panel);overflow:auto}.sidebar{border-right:1px solid var(--border)}.inspector{border-left:1px solid var(--border)}
 .section{padding:12px;border-bottom:1px solid var(--border)}.section h3{font-size:12px;text-transform:uppercase;color:var(--muted);letter-spacing:.7px;margin:0 0 9px}
-.palette{display:grid;gap:7px}.palette-item{padding:9px;border:1px solid var(--border);background:var(--panel2);border-radius:8px;cursor:grab;display:flex;align-items:center;gap:9px}.palette-item:hover{border-color:var(--accent)}.palette-item .ico{width:27px;height:27px;border-radius:7px;display:grid;place-items:center;background:#202e3f}.palette-item b{font-size:12px}.palette-item span{font-size:10px;color:var(--muted)}
+.palette{display:grid;gap:8px}.palette-item{padding:10px;border:1px solid var(--border);background:var(--panel2);border-radius:8px;cursor:grab;display:flex;align-items:flex-start;gap:10px;width:100%;min-width:0;height:auto;min-height:50px}.palette-item:hover{border-color:var(--accent)}.palette-item .ico{width:30px;height:30px;min-width:30px;border-radius:7px;display:grid;place-items:center;background:#202e3f;flex:none}.palette-copy{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:2px;flex:1}.palette-item b{display:block;font-size:12px;line-height:1.2;white-space:normal;overflow-wrap:anywhere;word-break:break-word}.palette-item span{display:block;font-size:10px;line-height:1.35;color:var(--muted);white-space:normal;overflow-wrap:anywhere;word-break:break-word}
 .help{font-size:11px;line-height:1.45;color:var(--muted)}
 .canvas-wrap{position:relative;overflow:hidden;background:#0a1017}
 #canvas{position:absolute;inset:0;overflow:hidden;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:24px 24px;user-select:none}
-#world{position:absolute;left:0;top:0;transform-origin:0 0}.edges{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}.edge{fill:none;stroke:#5e7790;stroke-width:2.1}.edge.replication{stroke:#b38bff;stroke-dasharray:8 6}.edge.selected{stroke:var(--accent2);stroke-width:3.2}.edge-halo{fill:none;stroke:rgba(86,178,255,.12);stroke-width:9}.edge.preview{stroke:var(--accent2);stroke-width:3;stroke-dasharray:6 6;opacity:.9}.port.connecting{background:var(--accent2);border-color:#fff;box-shadow:0 0 14px rgba(134,214,255,.95)}
-.node{position:absolute;width:190px;min-width:190px;max-width:420px;min-height:80px;height:auto;overflow:visible;background:linear-gradient(180deg,#172330,#131d28);border:1px solid #33465d;border-radius:10px;box-shadow:0 12px 35px rgba(0,0,0,.32);cursor:move;user-select:none}.node.selected{border-color:var(--accent);box-shadow:0 0 0 2px rgba(92,179,255,.16),var(--shadow)}.node.label-highlight{border-color:var(--warn);box-shadow:0 0 0 2px rgba(255,202,99,.20),0 0 24px rgba(255,202,99,.16)}.label-filter{display:flex;flex-wrap:wrap;gap:5px}.label-editor{display:flex;flex-wrap:wrap;gap:5px;padding:7px;border:1px solid var(--border);border-radius:8px;background:#0f1720;min-height:38px}.label-token{display:flex;align-items:center;gap:4px;padding:3px 6px;border:1px solid #39536c;border-radius:999px;background:#162534;font-size:9px;color:#cfe0ee;max-width:100%}.label-token button{border:0;background:transparent;padding:0;color:#8fa1b5;font-size:11px;line-height:1}.label-editor-input{flex:1;min-width:120px;border:0!important;background:transparent!important;padding:3px 2px!important;outline:none}.label-editor-actions{display:flex;gap:6px;margin-top:6px}.label-hint{font-size:10px;color:var(--muted);line-height:1.4;margin-top:5px}.label-filter button{font-size:10px;padding:5px 7px}.label-filter button.active{border-color:var(--warn);color:#ffe3a0;background:#3a2d12}.label-filter .label-count{color:var(--muted);font-size:10px;width:100%;margin-top:2px}.node .head{display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:start;gap:8px;padding:10px 10px 7px}.node .head>*{min-width:0}.node .icon{width:28px;height:28px;border-radius:7px;display:grid;place-items:center;background:#223246;flex:none}.node .title-wrap{min-width:0}.node .title{font-size:12px;font-weight:700;line-height:1.15;overflow-wrap:anywhere}.node .sub{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.35;white-space:normal;overflow-wrap:anywhere;word-break:break-word}.node .body{padding:0 10px 11px;min-width:0;overflow-wrap:anywhere}.node .body>*{max-width:100%}.chips{display:flex;flex-wrap:wrap;gap:4px;align-items:flex-start}.chip{font-size:9px;padding:3px 5px;border:1px solid #33465d;border-radius:999px;color:#bdd1e3;background:#162230;max-width:100%;overflow-wrap:anywhere}.details{margin-top:7px;border-top:1px solid #2a394b;padding-top:5px}.detail-row{padding:5px 0;border-bottom:1px solid rgba(42,57,75,.7);min-width:0}.detail-row:last-child{border-bottom:0}.detail-title{font-size:10px;font-weight:700;color:#dce8f3;line-height:1.25;overflow-wrap:anywhere}.detail-meta{font-size:9px;color:#8fa1b5;line-height:1.35;margin-top:3px;white-space:normal;overflow-wrap:anywhere;word-break:break-word}.detail-chips{display:flex;gap:3px;flex-wrap:wrap;margin-top:3px;align-items:flex-start}.node .expand{margin-left:0;border:0;background:transparent;padding:2px;color:var(--muted);font-size:14px;line-height:1}.node .expand:hover{color:var(--text)}
-.port{position:absolute;box-sizing:border-box;width:10px;height:10px;border-radius:50%;background:#263c53;border:2px solid #5f7b97;cursor:crosshair;z-index:4}.port.in{left:-5px;top:50%;transform:translateY(-50%)}.port.out{right:-5px;top:50%;transform:translateY(-50%)}.port.top{top:-5px;left:50%;transform:translateX(-50%)}.port.bottom{bottom:-5px;left:50%;transform:translateX(-50%)}.port.active{background:var(--accent);border-color:#d7f0ff;box-shadow:0 0 12px rgba(92,179,255,.8)}
+#world{position:absolute;left:0;top:0;transform-origin:0 0}.edges{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}.edge{fill:none;stroke:#5e7790;stroke-width:2.1}.edge.replication{stroke:#b38bff;stroke-dasharray:8 6}.edge.selected{stroke:var(--accent2);stroke-width:3.2}.edge-halo{fill:none;stroke:rgba(86,178,255,.12);stroke-width:9}.edge.preview{stroke:var(--accent2);stroke-width:3;stroke-dasharray:6 6;opacity:.9}.edge.collapsed{stroke:#7a8ea3;stroke-dasharray:7 6}.edge-collapse-control{cursor:pointer}.edge-collapse-control rect{fill:#172330;stroke:#506a84;stroke-width:1.4}.edge-collapse-control:hover rect{fill:#223246;stroke:var(--accent2)}.edge-collapse-control text{fill:#cfe0ee;font-size:11px;font-weight:700;dominant-baseline:middle;text-anchor:middle;pointer-events:none}.port.connecting{background:var(--accent2);border-color:#fff;box-shadow:0 0 14px rgba(134,214,255,.95)}
+.node{position:absolute;width:190px;min-width:190px;max-width:420px;min-height:80px;height:auto;overflow:visible;background:linear-gradient(180deg,#172330,#131d28);border:1px solid #33465d;border-radius:10px;box-shadow:0 12px 35px rgba(0,0,0,.32);cursor:move;user-select:none}.node.selected,.node.multi-selected{border-color:var(--accent);box-shadow:0 0 0 2px rgba(92,179,255,.16),var(--shadow)}.node.label-highlight{border-color:var(--warn);box-shadow:0 0 0 2px rgba(255,202,99,.20),0 0 24px rgba(255,202,99,.16)}.label-filter{display:flex;flex-wrap:wrap;gap:5px}.label-editor{display:flex;flex-wrap:wrap;gap:5px;padding:7px;border:1px solid var(--border);border-radius:8px;background:#0f1720;min-height:38px}.label-token{display:flex;align-items:center;gap:4px;padding:3px 6px;border:1px solid #39536c;border-radius:999px;background:#162534;font-size:9px;color:#cfe0ee;max-width:100%}.label-token button{border:0;background:transparent;padding:0;color:#8fa1b5;font-size:11px;line-height:1}.label-editor-input{flex:1;min-width:120px;border:0!important;background:transparent!important;padding:3px 2px!important;outline:none}.label-editor-actions{display:flex;gap:6px;margin-top:6px}.label-hint{font-size:10px;color:var(--muted);line-height:1.4;margin-top:5px}.label-filter button{font-size:10px;padding:5px 7px}.label-filter button.active{border-color:var(--warn);color:#ffe3a0;background:#3a2d12}.label-filter .label-count{color:var(--muted);font-size:10px;width:100%;margin-top:2px}.node{position:absolute;z-index:10}.node.selected{z-index:1000}.node.multi-selected{z-index:800}.node.label-highlight{z-index:300}.node .head{display:grid;grid-template-columns:28px minmax(0,1fr);align-items:start;gap:8px;padding:10px 10px 7px}.node .head>*{min-width:0}.node .icon{width:28px;height:28px;border-radius:7px;display:grid;place-items:center;background:#223246;flex:none}.node .title-wrap{min-width:0}.node .title{font-size:12px;font-weight:700;line-height:1.15;overflow-wrap:anywhere}.node .sub{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.35;white-space:normal;overflow-wrap:anywhere;word-break:break-word}.node .body{padding:0 10px 11px;min-width:0;overflow-wrap:anywhere}.node .body>*{max-width:100%}.node .footer{display:flex;justify-content:flex-end;padding:2px 10px 9px}.node .child-toggle{margin-left:auto}.chips{display:flex;flex-wrap:wrap;gap:4px;align-items:flex-start}.chip{font-size:9px;padding:3px 5px;border:1px solid #33465d;border-radius:999px;color:#bdd1e3;background:#162230;max-width:100%;overflow-wrap:anywhere}.details{margin-top:7px;border-top:1px solid #2a394b;padding-top:5px}.detail-row{padding:5px 0;border-bottom:1px solid rgba(42,57,75,.7);min-width:0}.detail-row:last-child{border-bottom:0}.detail-title{font-size:10px;font-weight:700;color:#dce8f3;line-height:1.25;overflow-wrap:anywhere}.detail-meta{font-size:9px;color:#8fa1b5;line-height:1.35;margin-top:3px;white-space:normal;overflow-wrap:anywhere;word-break:break-word}.detail-chips{display:flex;gap:3px;flex-wrap:wrap;margin-top:3px;align-items:flex-start}.node .child-toggle{margin:0;border:1px solid transparent;background:transparent;padding:1px 3px;color:var(--muted);font-size:15px;line-height:1;border-radius:5px;display:grid;place-items:center;min-width:22px;min-height:22px}.node .child-toggle:hover{color:var(--text);border-color:var(--border2);background:#1b2a3a}.node .child-toggle[aria-expanded="true"]{color:var(--accent2)}.node .child-toggle[aria-expanded="false"]{color:#7f93a7}.node .child-toggle:disabled{opacity:.35;cursor:default}
+.port{position:absolute;box-sizing:border-box;width:10px;height:10px;border-radius:50%;background:#263c53;border:2px solid #5f7b97;cursor:crosshair;z-index:4}.port.in{left:-5px;top:50%;transform:translateY(-50%)}.port.out{right:-5px;top:50%;transform:translateY(-50%)}
+.relation-toggle{position:absolute;right:18px;top:50%;transform:translateY(-50%);width:18px;height:18px;padding:0;border:1px solid #4f667d;border-radius:5px;background:#172330;color:#9fb4c7;font-size:12px;line-height:16px;text-align:center;display:grid;place-items:center;z-index:5;cursor:pointer}.relation-toggle:hover{border-color:var(--accent2);color:#fff;background:#223246}.relation-toggle.collapsed{color:var(--accent2);border-color:#6b8da9}.port.top{top:-5px;left:50%;transform:translateX(-50%)}.port.bottom{bottom:-5px;left:50%;transform:translateX(-50%)}.port.active{background:var(--accent);border-color:#d7f0ff;box-shadow:0 0 12px rgba(92,179,255,.8)}
 .empty{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}.empty .card{padding:24px 28px;border:1px dashed #3a4f66;border-radius:14px;background:rgba(16,24,34,.82);text-align:center}.empty b{display:block;font-size:16px;margin-bottom:6px}.empty p{margin:0;color:var(--muted);font-size:12px}
 .inspector-content{padding:12px}.muted{color:var(--muted);font-size:11px}.field{margin:0 0 10px}.field label{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px}.field input,.field textarea,.field select{width:100%;background:#0f1720;color:var(--text);border:1px solid var(--border2);border-radius:7px;padding:7px 8px}.field textarea{min-height:68px;resize:vertical}.row{display:grid;grid-template-columns:1fr 1fr;gap:7px}.actions{display:flex;gap:7px;flex-wrap:wrap}.list{border:1px solid var(--border);border-radius:8px;overflow:hidden}.list-item{padding:8px 9px;background:#121c27;border-bottom:1px solid var(--border);font-size:11px}.list-item:last-child{border-bottom:0}.list-item strong{display:block}.list-item small{color:var(--muted)}
 .badge{display:inline-block;font-size:9px;padding:3px 6px;border-radius:999px;border:1px solid var(--border2);color:#c4d2df}.badge.green{border-color:#2d6f56;color:#86e1b6}.badge.yellow{border-color:#6f5e2d;color:#ffd87f}.badge.red{border-color:#6e343a;color:#ff9b9f}.node-measure{pointer-events:none;overflow:visible}.inspector-title{margin:0 0 8px;font-size:14px}.type-badge{display:inline-block;font-size:9px;padding:3px 7px;border:1px solid var(--border2);border-radius:999px;color:#bdd1e3;background:#162230;margin-bottom:10px}.inner-section{padding:0;border:0;margin-top:14px}.inner-section h3{font-size:11px;margin:0 0 8px}.section-help{margin-bottom:9px;line-height:1.45}.empty-details{padding:8px 0 10px}.custom-detail-editor{padding:9px;background:#0f1720;border:1px solid var(--border);border-radius:8px;margin-bottom:8px}.custom-detail-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}.custom-detail-head strong{font-size:10px;color:#cddbe8}.custom-detail-head .danger{padding:4px 7px;font-size:10px}.full-width{width:100%}.attached-service-editor{border-color:#39536c}.attached-service-editor .field{margin-bottom:8px}
@@ -38,8 +39,8 @@ button,input,textarea,select{font:inherit} button{border:1px solid var(--border2
 <div id="app">
   <div class="topbar">
     <div class="brand">IT Infrastructure Sketch Builder<small>standalone • no server required</small></div>
-    <button id="newBtn">New</button><button id="saveBtn" class="primary">Save JSON</button><button id="loadBtn">Load JSON</button><button id="svgBtn">Export SVG</button>
-    <div class="spacer"></div><button id="autoBtn">Auto Layout</button><button id="fitBtn">Fit</button><button id="expandBtn">Expand All</button><button id="collapseBtn">Collapse All</button>
+    <button id="newBtn">New</button><button id="saveBtn" class="primary">Save JSON</button><button id="loadBtn">Load JSON</button><button id="svgBtn">Export SVG</button><button id="pngBtn">Export PNG</button>
+    <div class="spacer"></div><button id="autoBtn">Auto Layout</button><button id="fitBtn">Fit</button><button id="expandBtn">Expand All</button><button id="collapseBtn">Collapse All</button><button id="connectionsBtn">Connections: On</button>
     <div class="status" id="status">Ready</div>
   </div>
   <div class="main">
@@ -50,8 +51,8 @@ button,input,textarea,select{font:inherit} button{border:1px solid var(--border2
       <div class="section"><h3>Identity & Cloud</h3><div id="identityPalette" class="palette"></div></div>
       <div class="section"><h3>Security & Services</h3><div id="servicePalette" class="palette"></div></div>
     </aside>
-    <section class="canvas-wrap" id="canvasWrap"><div id="canvas"><div id="world"><svg id="edges" class="edges" width="5000" height="5000"></svg><div id="nodes"></div></div><div id="empty" class="empty"><div class="card"><b>Start sketching your infrastructure</b><p>Drag a component here or double-click one in the palette.</p></div></div></div></section>
-    <aside class="inspector"><div id="inspectorContent" class="inspector-content"><h3 style="margin:0 0 7px;font-size:14px">Inspector</h3><div class="muted">Select a node or connection to edit it.</div></div></aside>
+    <section class="canvas-wrap" id="canvasWrap"><div id="canvas"><div id="world"><svg id="edges" class="edges" width="5000" height="5000"></svg><div id="nodes"></div></div><div id="empty" class="empty"><div class="card"><b>Start sketching your infrastructure</b><p>Drag a component here or double-click one in the palette.</p></div></div><div id="selectionBox" class="selection-box"></div><div class="canvas-help-badge">Shift+click = multi-select • drag empty canvas = select area • drag selection = move group</div></div></section>
+    <aside class="inspector"><div id="inspectorContent" class="inspector-content"><h3 style="margin:0 0 7px;font-size:14px">Inspector</h3><div class="muted">Select a node or connection to edit it. Shift+click or drag on empty canvas to select multiple nodes.</div></div></aside>
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -126,6 +127,9 @@ button,input,textarea,select{font:inherit} button{border:1px solid var(--border2
     connectDrag: null,
     nodeDrag: null,
     pan: null,
+    marquee: null,
+    multiSelected: new Set(),
+    connectionsVisible: true,
     dirty: false,
     toastTimer: null,
     activeLabels: []
@@ -175,6 +179,27 @@ button,input,textarea,select{font:inherit} button{border:1px solid var(--border2
   function selectItem(kind, id) {
     app.selected = { kind, id };
     app.connectDrag = null;
+    app.multiSelected.clear();
+    if (kind === 'node' && id) app.multiSelected.add(id);
+    render();
+    renderInspector();
+  }
+
+  function toggleNodeSelection(nodeId) {
+    if (app.multiSelected.has(nodeId)) app.multiSelected.delete(nodeId);
+    else app.multiSelected.add(nodeId);
+
+    const ids = [...app.multiSelected];
+    if (ids.length === 1) app.selected = { kind:'node', id:ids[0] };
+    else if (ids.length > 1) app.selected = { kind:'nodes', id:ids };
+    else app.selected = null;
+    render();
+    renderInspector();
+  }
+
+  function clearSelection() {
+    app.selected = null;
+    app.multiSelected.clear();
     render();
     renderInspector();
   }
@@ -193,7 +218,11 @@ button,input,textarea,select{font:inherit} button{border:1px solid var(--border2
   function removeNode(id) {
     app.model.nodes = app.model.nodes.filter((node) => node.id !== id);
     app.model.connections = app.model.connections.filter((connection) => connection.from !== id && connection.to !== id);
-    if (app.selected?.id === id) app.selected = null;
+    app.multiSelected.delete(id);
+    if (app.selected?.id === id || app.selected?.kind === 'nodes') {
+      const ids = [...app.multiSelected];
+      app.selected = ids.length ? (ids.length === 1 ? {kind:'node',id:ids[0]} : {kind:'nodes',id:ids}) : null;
+    }
     markDirty();
     render();
     renderInspector();
@@ -344,7 +373,8 @@ button,input,textarea,select{font:inherit} button{border:1px solid var(--border2
       port:connection.port || '',
       schedule:connection.schedule || '',
       direction:connection.direction || '',
-      notes:connection.notes || ''
+      notes:connection.notes || '',
+      collapsed:Boolean(connection.collapsed)
     };
   }
 
@@ -353,7 +383,6 @@ button,input,textarea,select{font:inherit} button{border:1px solid var(--border2
      ============================================================ */
 
   function getExpandedDetails(node) {
-    if (!node.expanded) return [];
 
     const p = node.props || {};
     const details = [];
@@ -499,7 +528,9 @@ button,input,textarea,select{font:inherit} button{border:1px solid var(--border2
 
   function getNodeMarkup(node, measurement=false) {
     const definition = TYPES[node.type] || TYPES.service;
-    const details = getExpandedDetails(node);
+    const allDetails = getExpandedDetails(node);
+    const details = node.expanded ? allDetails : [];
+    const hasChildren = allDetails.length > 0;
     const chips = Array.isArray(node.labels) ? node.labels : [];
     const detailsHtml = node.expanded && details.length
       ? `<div class="details">${details.map((detail) => `
@@ -518,12 +549,45 @@ button,input,textarea,select{font:inherit} button{border:1px solid var(--border2
           <div class="title">${escapeHtml(node.name)}</div>
           <div class="sub">${escapeHtml(node.description || definition.desc)}</div>
         </div>
-        ${measurement ? '' : `<button class="expand" type="button" title="Expand details">${node.expanded ? '▾' : '▸'}</button>`}
       </div>
       <div class="body">
         ${chips.length ? `<div class="chips">${chips.map((chip) => `<span class="chip">${escapeHtml(chip)}</span>`).join('')}</div>` : ''}
         ${detailsHtml}
-      </div>`;
+      </div>
+      ${measurement ? '' : `<div class="footer"><button class="child-toggle" type="button" aria-expanded="${node.expanded ? 'true' : 'false'}" title="${node.expanded ? 'Collapse child details' : 'Expand child details'}" ${hasChildren ? '' : 'disabled'}>${node.expanded ? '⌄' : '›'} Expand</button></div>`}
+      ${measurement ? '' : renderRelationToggleMarkup(node)}`;
+  }
+
+  function renderRelationToggleMarkup(node) {
+    const outgoing = app.model.connections.filter((connection) => connection.from === node.id && connection.fromPort === 'out');
+    if (!outgoing.length) return '';
+
+    const allCollapsed = outgoing.every((connection) => Boolean(connection.collapsed));
+    const anyOpen = outgoing.some((connection) => !connection.collapsed);
+    const collapsed = !anyOpen && allCollapsed;
+    const title = collapsed
+      ? 'Show all branches from this output port'
+      : 'Hide all branches from this output port';
+
+    return `<button class="relation-toggle ${collapsed ? 'collapsed' : ''}" data-relation-port="out" data-relation-node="${escapeHtml(node.id)}" type="button" title="${escapeHtml(title)}" aria-label="${escapeHtml(title)}">${collapsed ? '›' : '−'}</button>`;
+  }
+
+  function toggleOutputPortCollapsed(nodeId, port='out') {
+    const outgoing = app.model.connections.filter((connection) => connection.from === nodeId && connection.fromPort === port);
+    if (!outgoing.length) return;
+
+    const allCollapsed = outgoing.every((connection) => Boolean(connection.collapsed));
+    const nextCollapsed = !allCollapsed;
+    outgoing.forEach((connection) => {
+      connection.collapsed = nextCollapsed;
+    });
+
+    if (app.selected?.kind === 'connection' && outgoing.some((connection) => connection.id === app.selected.id)) {
+      renderInspector();
+    }
+    markDirty();
+    render();
+    toast(nextCollapsed ? 'All branches from this port collapsed' : 'All branches from this port expanded');
   }
 
   function measureNodeSize(node) {
@@ -588,6 +652,64 @@ button,input,textarea,select{font:inherit} button{border:1px solid var(--border2
     };
   }
 
+
+  /* ============================================================
+     CONNECTION COLLAPSE / BRANCH VISIBILITY
+     ============================================================ */
+
+  function getCollapsedNodeIds() {
+    const hidden = new Set();
+    const queue = [];
+    app.model.connections.forEach((connection) => {
+      if (connection.collapsed && getNode(connection.from) && getNode(connection.to)) {
+        queue.push(connection.to);
+      }
+    });
+
+    while (queue.length) {
+      const nodeId = queue.shift();
+      if (hidden.has(nodeId)) continue;
+      hidden.add(nodeId);
+      app.model.connections.forEach((connection) => {
+        if (connection.from === nodeId && !hidden.has(connection.to)) queue.push(connection.to);
+      });
+    }
+    return hidden;
+  }
+
+  function toggleConnectionCollapsed(connectionId) {
+    const connection = getConnection(connectionId);
+    if (!connection) return;
+    connection.collapsed = !connection.collapsed;
+    if (app.selected?.kind === 'connection' && app.selected.id === connectionId) {
+      renderInspector();
+    }
+    markDirty();
+    render();
+    toast(connection.collapsed ? 'Branch collapsed' : 'Branch expanded');
+  }
+
+  function getEdgeMidpoint(nodeA, nodeB, fromPort='out', toPort='in') {
+    const start = getPortPoint(nodeA, fromPort);
+    const end = getPortPoint(nodeB, toPort);
+    return { x:(start.x + end.x) / 2, y:(start.y + end.y) / 2 };
+  }
+
+  function buildPartialEdgePath(nodeA, nodeB, fromPort='out', toPort='in', fraction=0.5) {
+    const start = getPortPoint(nodeA, fromPort);
+    const end = getPortPoint(nodeB, toPort);
+    const mid = {x:start.x + (end.x - start.x) * fraction, y:start.y + (end.y - start.y) * fraction};
+    if (Math.abs(end.x - start.x) >= Math.abs(end.y - start.y)) {
+      const distance = Math.max(50, Math.abs(end.x - start.x) * 0.45);
+      const direction = end.x >= start.x ? 1 : -1;
+      return `M ${start.x} ${start.y} C ${start.x + direction * distance * fraction} ${start.y}, ${mid.x - direction * distance * 0.35} ${mid.y}, ${mid.x} ${mid.y}`;
+    }
+    const distance = Math.max(50, Math.abs(end.y - start.y) * 0.45);
+    const direction = end.y >= start.y ? 1 : -1;
+    return `M ${start.x} ${start.y} C ${start.x} ${start.y + direction * distance * fraction}, ${mid.x} ${mid.y - direction * distance * 0.35}, ${mid.x} ${mid.y}`;
+  }
+
+
   /* ============================================================
      RENDERING
      ============================================================ */
@@ -609,18 +731,27 @@ button,input,textarea,select{font:inherit} button{border:1px solid var(--border2
   function renderConnections() {
     const svg = $('edges');
     svg.innerHTML = '';
+    if (!app.connectionsVisible) {
+      if (app.connectDrag) renderConnectionPreview(svg);
+      return;
+    }
+
+    const hiddenNodeIds = getCollapsedNodeIds();
 
     app.model.connections.forEach((connection) => {
       const fromNode = getNode(connection.from);
       const toNode = getNode(connection.to);
-      if (!fromNode || !toNode) return;
+      if (!fromNode || !toNode || hiddenNodeIds.has(connection.from)) return;
 
       const path = document.createElementNS(SVG_NS, 'path');
       const classes = ['edge'];
       if (connection.kind === 'replication') classes.push('replication');
+      if (connection.collapsed) classes.push('collapsed');
       if (app.selected?.kind === 'connection' && app.selected.id === connection.id) classes.push('selected');
       path.setAttribute('class', classes.join(' '));
-      path.setAttribute('d', buildEdgePath(fromNode, toNode, connection.fromPort, connection.toPort));
+      path.setAttribute('d', connection.collapsed
+        ? buildPartialEdgePath(fromNode, toNode, connection.fromPort, connection.toPort, 0.5)
+        : buildEdgePath(fromNode, toNode, connection.fromPort, connection.toPort));
       path.style.pointerEvents = 'stroke';
       path.dataset.id = connection.id;
       path.addEventListener('click', (event) => {
@@ -628,6 +759,7 @@ button,input,textarea,select{font:inherit} button{border:1px solid var(--border2
         selectItem('connection', connection.id);
       });
       svg.appendChild(path);
+
     });
 
     if (app.connectDrag) renderConnectionPreview(svg);
@@ -651,11 +783,16 @@ button,input,textarea,select{font:inherit} button{border:1px solid var(--border2
     const container = $('nodes');
     container.innerHTML = '';
 
+    const hiddenNodeIds = getCollapsedNodeIds();
+
     app.model.nodes.forEach((node) => {
+      if (hiddenNodeIds.has(node.id)) return;
       const isSelected = app.selected?.kind === 'node' && app.selected.id === node.id;
+      const isMultiSelected = app.multiSelected.has(node.id);
       const isLabelHighlighted = app.activeLabels.length > 0 && (node.labels || []).some((label) => app.activeLabels.includes(label));
       const classes = ['node'];
       if (isSelected) classes.push('selected');
+      if (isMultiSelected) classes.push('multi-selected');
       if (isLabelHighlighted) classes.push('label-highlight');
       const element = createElement('div', classes.join(' '));
       element.dataset.id = node.id;
@@ -663,6 +800,9 @@ button,input,textarea,select{font:inherit} button{border:1px solid var(--border2
       element.style.top = `${node.y}px`;
       element.style.width = `${node.w}px`;
       element.style.height = `${node.h}px`;
+      // Selected nodes always render above surrounding nodes so expanded details remain readable.
+      // Multi-selected nodes stay above normal nodes, while the active single selection is highest.
+      element.style.zIndex = isSelected ? '1000' : (isMultiSelected ? '800' : (isLabelHighlighted ? '300' : '10'));
       element.innerHTML = getNodeMarkup(node, false);
 
       bindNodeEvents(element, node);
@@ -677,17 +817,30 @@ button,input,textarea,select{font:inherit} button{border:1px solid var(--border2
   function bindNodeEvents(element, node) {
     element.addEventListener('mousedown', (event) => startNodeDrag(event, node.id));
     element.addEventListener('click', (event) => {
-      if (event.target.closest('.expand') || event.target.closest('.port')) return;
-      selectItem('node', node.id);
+      if (event.target.closest('.child-toggle') || event.target.closest('.port')) return;
+      if (event.shiftKey) {
+        toggleNodeSelection(node.id);
+      } else if (!app.nodeDrag) {
+        selectItem('node', node.id);
+      }
     });
 
-    const expandButton = element.querySelector('.expand');
+    const expandButton = element.querySelector('.child-toggle');
     if (expandButton) {
       expandButton.addEventListener('click', (event) => {
         event.stopPropagation();
         toggleExpanded(node.id);
       });
     }
+
+    element.querySelectorAll('[data-relation-port]').forEach((button) => {
+      button.addEventListener('click', (event) => {
+        event.stopPropagation();
+        toggleOutputPortCollapsed(button.dataset.relationNode, button.dataset.relationPort);
+      });
+      button.addEventListener('mousedown', (event) => event.stopPropagation());
+      button.addEventListener('pointerdown', (event) => event.stopPropagation());
+    });
 
     element.querySelectorAll('.port').forEach((port) => {
       port.title = port.dataset.port === 'out' ? 'Drag to another node input' : 'Drop connection here';
@@ -697,17 +850,37 @@ button,input,textarea,select{font:inherit} button{border:1px solid var(--border2
   }
 
   /* ============================================================
-     NODE DRAGGING / PANNING
+     NODE DRAGGING / MULTI-SELECTION / PANNING
      ============================================================ */
 
   function startNodeDrag(event, nodeId) {
-    if (event.button !== 0 || event.target.closest('.port') || event.target.closest('.expand')) return;
-    const node = getNode(nodeId);
-    if (!node) return;
-    selectItem('node', nodeId);
+    if (event.button !== 0 || event.target.closest('.port') || event.target.closest('.child-toggle')) return;
+    event.preventDefault();
+
+    if (event.shiftKey) {
+      toggleNodeSelection(nodeId);
+      return;
+    }
+
+    if (!app.multiSelected.has(nodeId)) {
+      app.multiSelected.clear();
+      app.multiSelected.add(nodeId);
+      app.selected = { kind:'node', id:nodeId };
+      render();
+      renderInspector();
+    }
 
     const point = getWorldPoint(event.clientX, event.clientY);
-    app.nodeDrag = { id:nodeId, offsetX:point.x-node.x, offsetY:point.y-node.y };
+    const selectedIds = [...app.multiSelected];
+    app.nodeDrag = {
+      startX: point.x,
+      startY: point.y,
+      items: selectedIds.map((id) => {
+        const node = getNode(id);
+        return node ? { id, startX:node.x, startY:node.y } : null;
+      }).filter(Boolean)
+    };
+
     document.addEventListener('mousemove', handleNodeDrag);
     document.addEventListener('mouseup', stopNodeDrag, { once:true });
   }
@@ -715,10 +888,16 @@ button,input,textarea,select{font:inherit} button{border:1px solid var(--border2
   function handleNodeDrag(event) {
     if (!app.nodeDrag) return;
     const point = getWorldPoint(event.clientX, event.clientY);
-    const node = getNode(app.nodeDrag.id);
-    if (!node) return;
-    node.x = snap(point.x - app.nodeDrag.offsetX);
-    node.y = snap(point.y - app.nodeDrag.offsetY);
+    const dx = point.x - app.nodeDrag.startX;
+    const dy = point.y - app.nodeDrag.startY;
+
+    app.nodeDrag.items.forEach((item) => {
+      const node = getNode(item.id);
+      if (!node) return;
+      node.x = snap(item.startX + dx);
+      node.y = snap(item.startY + dy);
+    });
+
     markDirty();
     render();
   }
@@ -749,6 +928,67 @@ button,input,textarea,select{font:inherit} button{border:1px solid var(--border2
   function stopPan() {
     app.pan = null;
     document.removeEventListener('mousemove', handlePan);
+  }
+
+  function startMarquee(event) {
+    const rect = $('canvas').getBoundingClientRect();
+    app.marquee = {
+      startClientX:event.clientX,
+      startClientY:event.clientY,
+      startCanvasX:event.clientX - rect.left,
+      startCanvasY:event.clientY - rect.top,
+      additive:event.shiftKey
+    };
+    if (!app.marquee.additive) {
+      app.multiSelected.clear();
+      app.selected = null;
+    }
+    updateMarquee(event);
+    document.addEventListener('mousemove', updateMarquee);
+    document.addEventListener('mouseup', finishMarquee, { once:true });
+  }
+
+  function updateMarquee(event) {
+    if (!app.marquee) return;
+    const rect = $('canvas').getBoundingClientRect();
+    const currentX = event.clientX - rect.left;
+    const currentY = event.clientY - rect.top;
+    const left = Math.min(app.marquee.startCanvasX, currentX);
+    const top = Math.min(app.marquee.startCanvasY, currentY);
+    const width = Math.abs(currentX - app.marquee.startCanvasX);
+    const height = Math.abs(currentY - app.marquee.startCanvasY);
+
+    const box = $('selectionBox');
+    box.style.left = `${left}px`;
+    box.style.top = `${top}px`;
+    box.style.width = `${width}px`;
+    box.style.height = `${height}px`;
+    box.classList.add('show');
+
+    const boxRect = { left:rect.left+left, top:rect.top+top, right:rect.left+left+width, bottom:rect.top+top+height };
+    if (width < 4 && height < 4) return;
+
+    app.model.nodes.forEach((node) => {
+      const nodeElement = document.querySelector(`.node[data-id="${CSS.escape(node.id)}"]`);
+      if (!nodeElement) return;
+      const nodeRect = nodeElement.getBoundingClientRect();
+      const intersects = nodeRect.left < boxRect.right && nodeRect.right > boxRect.left && nodeRect.top < boxRect.bottom && nodeRect.bottom > boxRect.top;
+      if (intersects) app.multiSelected.add(node.id);
+      else if (!app.marquee.additive) app.multiSelected.delete(node.id);
+    });
+
+    const ids = [...app.multiSelected];
+    app.selected = ids.length ? (ids.length === 1 ? {kind:'node',id:ids[0]} : {kind:'nodes',id:ids}) : null;
+    render();
+  }
+
+  function finishMarquee() {
+    if (!app.marquee) return;
+    app.marquee = null;
+    $('selectionBox').classList.remove('show');
+    document.removeEventListener('mousemove', updateMarquee);
+    render();
+    renderInspector();
   }
 
   /* ============================================================
@@ -1165,6 +1405,8 @@ button,input,textarea,select{font:inherit} button{border:1px solid var(--border2
       ${fieldHtml('Schedule','schedule',connection.schedule || '')}
       ${fieldHtml('Direction','direction',connection.direction || '')}
       ${textareaHtml('Notes','notes',connection.notes || '')}
+      <label class="check-row"><input id="connectionCollapsed" type="checkbox" ${connection.collapsed ? 'checked' : ''}> Collapse branch from this connection</label>
+      <div class="muted section-help">Collapsing hides the target and everything downstream until expanded again. The connection remains visible up to its midpoint.</div>
       <div class="actions"><button id="deleteConnection" class="danger">Delete connection</button></div>`;
 
     $('connectionKind').value = connection.kind;
@@ -1181,6 +1423,12 @@ button,input,textarea,select{font:inherit} button{border:1px solid var(--border2
         markDirty();
         render();
       });
+    });
+
+    container.querySelector('#connectionCollapsed')?.addEventListener('change', (event) => {
+      connection.collapsed = event.target.checked;
+      markDirty();
+      render();
     });
 
     container.querySelector('#deleteConnection').addEventListener('click', () => {
@@ -1327,33 +1575,123 @@ button,input,textarea,select{font:inherit} button{border:1px solid var(--border2
     reader.readAsText(file);
   }
 
-  function exportSvg() {
+  function buildExportSvg() {
     measureAllNodes();
     const minX = Math.min(0, ...app.model.nodes.map((node) => node.x));
     const minY = Math.min(0, ...app.model.nodes.map((node) => node.y));
     const maxX = Math.max(900, ...app.model.nodes.map((node) => node.x + node.w + 120));
     const maxY = Math.max(650, ...app.model.nodes.map((node) => node.y + node.h + 120));
-    let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${maxX-minX}" height="${maxY-minY}" viewBox="${minX} ${minY} ${maxX-minX} ${maxY-minY}"><rect width="100%" height="100%" fill="#0b1118"/>`;
+    const width = maxX - minX;
+    const height = maxY - minY;
+
+    let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="${minX} ${minY} ${width} ${height}">`;
+    svg += '<rect width="100%" height="100%" fill="#0b1118"/>';
 
     app.model.connections.forEach((connection) => {
       const fromNode = getNode(connection.from);
       const toNode = getNode(connection.to);
       if (!fromNode || !toNode) return;
-      svg += `<path d="${buildEdgePath(fromNode,toNode,connection.fromPort,connection.toPort)}" fill="none" stroke="${connection.kind === 'replication' ? '#b38bff' : '#6f89a3'}" stroke-width="2" ${connection.kind === 'replication' ? 'stroke-dasharray="8 6"' : ''}/>`;
+      if (!app.connectionsVisible) return;
+      if (connection.collapsed) return;
+
+      const path = buildEdgePath(fromNode, toNode, connection.fromPort, connection.toPort);
+      const stroke = connection.kind === 'replication' ? '#b38bff' : '#6f89a3';
+      const dash = connection.kind === 'replication' ? ' stroke-dasharray="8 6"' : '';
+      svg += `<path d="${path}" fill="none" stroke="${stroke}" stroke-width="2"${dash}/>`;
     });
 
     app.model.nodes.forEach((node) => {
       const definition = TYPES[node.type] || TYPES.service;
-      svg += `<g transform="translate(${node.x} ${node.y})"><rect width="${node.w}" height="${node.h}" rx="10" fill="#172330" stroke="#3b4f66"/><rect x="10" y="10" width="28" height="28" rx="7" fill="${definition.color}"/><text x="24" y="29" text-anchor="middle" fill="#fff" font-size="12">${escapeHtml(definition.icon)}</text><text x="48" y="24" fill="#e9f0f7" font-size="12" font-weight="700">${escapeXml(node.name)}</text><text x="48" y="39" fill="#8fa1b5" font-size="9">${escapeXml(node.description || definition.desc)}</text></g>`;
+      const labels = Array.isArray(node.labels) ? node.labels : [];
+      const customDetails = Array.isArray(node.customDetails) ? node.customDetails : [];
+      const services = Array.isArray(node.services) ? node.services : [];
+      const childDetails = node.expanded ? [...customDetails, ...services.map((service) => ({
+        title: service.name || service.type || 'Service',
+        meta: [service.scope, service.protocol, service.port ? `Port ${service.port}` : '', service.enabled === false ? 'Disabled' : 'Enabled'].filter(Boolean).join(' • '),
+        chips: service.labels || []
+      }))] : [];
+
+      const paddingX = 10;
+      const titleX = 48;
+      const titleY = 24;
+      const descY = 40;
+      let extraY = 56;
+      let nodeSvg = `<g transform="translate(${node.x} ${node.y})">`;
+      nodeSvg += `<rect width="${node.w}" height="${node.h}" rx="10" fill="#172330" stroke="#3b4f66"/>`;
+      nodeSvg += `<rect x="10" y="10" width="28" height="28" rx="7" fill="${escapeXml(definition.color || '#44566a')}"/>`;
+      nodeSvg += `<text x="24" y="29" text-anchor="middle" fill="#fff" font-size="12" font-family="Segoe UI,Arial">${escapeXml(definition.icon || '•')}</text>`;
+      nodeSvg += `<text x="${titleX}" y="${titleY}" fill="#e9f0f7" font-size="12" font-weight="700" font-family="Segoe UI,Arial">${escapeXml(node.name || definition.label)}</text>`;
+      nodeSvg += `<text x="${titleX}" y="${descY}" fill="#8fa1b5" font-size="9" font-family="Segoe UI,Arial">${escapeXml(node.description || definition.desc || '')}</text>`;
+
+      if (labels.length) {
+        labels.forEach((label, index) => {
+          const chipWidth = Math.min(130, Math.max(34, 10 + String(label).length * 5.5));
+          const chipX = paddingX + (index * (chipWidth + 4));
+          nodeSvg += `<rect x="${chipX}" y="${extraY}" width="${chipWidth}" height="18" rx="9" fill="#162230" stroke="#33465d"/>`;
+          nodeSvg += `<text x="${chipX + chipWidth / 2}" y="${extraY + 12}" text-anchor="middle" fill="#bdd1e3" font-size="9" font-family="Segoe UI,Arial">${escapeXml(label)}</text>`;
+        });
+        extraY += 24;
+      }
+
+      childDetails.forEach((detail) => {
+        nodeSvg += `<line x1="${paddingX}" y1="${extraY}" x2="${node.w - paddingX}" y2="${extraY}" stroke="#2a394b"/>`;
+        extraY += 6;
+        nodeSvg += `<text x="${paddingX}" y="${extraY + 10}" fill="#dce8f3" font-size="10" font-weight="700" font-family="Segoe UI,Arial">${escapeXml(detail.title || 'Detail')}</text>`;
+        extraY += 16;
+        if (detail.meta) {
+          nodeSvg += `<text x="${paddingX}" y="${extraY}" fill="#8fa1b5" font-size="9" font-family="Segoe UI,Arial">${escapeXml(detail.meta)}</text>`;
+          extraY += 13;
+        }
+      });
+
+      nodeSvg += '</g>';
+      svg += nodeSvg;
     });
 
     svg += '</svg>';
+    return { svg, width, height };
+  }
+
+  function exportSvg() {
+    const { svg } = buildExportSvg();
     const blob = new Blob([svg], { type:'image/svg+xml' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'infrastructure.svg';
+    link.download = `${(app.model.project.name || 'infrastructure').replace(/[^a-z0-9_-]+/gi, '_') || 'infrastructure'}.svg`;
     link.click();
     setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+  }
+
+  function exportPng() {
+    const { svg, width, height } = buildExportSvg();
+    const scale = Math.min(2, Math.max(1, window.devicePixelRatio || 1));
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.ceil(width * scale);
+    canvas.height = Math.ceil(height * scale);
+    const context = canvas.getContext('2d');
+    if (!context) {
+      toast('PNG export is not supported by this browser');
+      return;
+    }
+
+    const image = new Image();
+    image.onload = () => {
+      context.setTransform(scale, 0, 0, scale, 0, 0);
+      context.drawImage(image, 0, 0, width, height);
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          toast('Could not create PNG');
+          return;
+        }
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `${(app.model.project.name || 'infrastructure').replace(/[^a-z0-9_-]+/gi, '_') || 'infrastructure'}.png`;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+      }, 'image/png');
+    };
+    image.onerror = () => toast('Could not render PNG export');
+    image.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
   }
 
   function escapeXml(value) {
@@ -1394,8 +1732,15 @@ button,input,textarea,select{font:inherit} button{border:1px solid var(--border2
     });
 
     canvasWrap.addEventListener('mousedown', (event) => {
-      if (event.target.closest('.node') || event.target.closest('.edge')) return;
-      if (event.button === 1 || (event.button === 0 && event.shiftKey)) startPan(event);
+      if (event.target.closest('.node') || event.target.closest('.edge') || event.target.closest('#selectionBox')) return;
+      if (event.button === 1) {
+        startPan(event);
+        return;
+      }
+      if (event.button === 0) {
+        if (event.shiftKey) startPan(event);
+        else startMarquee(event);
+      }
     });
 
     canvasWrap.addEventListener('wheel', (event) => {
@@ -1424,6 +1769,7 @@ button,input,textarea,select{font:inherit} button{border:1px solid var(--border2
       app.model = blankModel();
       app.model.project.name = name || 'Untitled Infrastructure';
       app.selected = null;
+      app.multiSelected.clear();
       app.activeLabels = [];
       app.dirty = false;
       localStorage.removeItem(STORAGE_KEY);
@@ -1442,7 +1788,14 @@ button,input,textarea,select{font:inherit} button{border:1px solid var(--border2
     $('fitBtn').onclick = fitToCanvas;
     $('expandBtn').onclick = () => { app.model.nodes.forEach((node) => node.expanded = true); markDirty(); render(); };
     $('collapseBtn').onclick = () => { app.model.nodes.forEach((node) => node.expanded = false); markDirty(); render(); };
+    $('connectionsBtn').onclick = () => {
+      app.connectionsVisible = !app.connectionsVisible;
+      $('connectionsBtn').textContent = `Connections: ${app.connectionsVisible ? 'On' : 'Off'}`;
+      render();
+      toast(app.connectionsVisible ? 'Connections shown' : 'Connections hidden');
+    };
     $('svgBtn').onclick = exportSvg;
+    $('pngBtn').onclick = exportPng;
   }
 
   function bindKeyboardEvents() {
@@ -1456,7 +1809,13 @@ button,input,textarea,select{font:inherit} button{border:1px solid var(--border2
 
       if (event.key === 'Delete' && app.selected) {
         if (app.selected.kind === 'node') removeNode(app.selected.id);
-        else {
+        else if (app.selected.kind === 'nodes') {
+          const ids = new Set(app.multiSelected);
+          app.model.nodes = app.model.nodes.filter((node) => !ids.has(node.id));
+          app.model.connections = app.model.connections.filter((connection) => !ids.has(connection.from) && !ids.has(connection.to));
+          clearSelection();
+          markDirty();
+        } else {
           app.model.connections = app.model.connections.filter((connection) => connection.id !== app.selected.id);
           app.selected = null;
           markDirty();
