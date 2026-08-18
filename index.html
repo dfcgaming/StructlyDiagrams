@@ -1,0 +1,1488 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IT Infrastructure Sketch Builder</title>
+<style>
+:root{
+  --bg:#0b1118;--panel:#111a24;--panel2:#151f2c;--panel3:#1b2736;--border:#2a394b;--border2:#3a4e67;
+  --text:#e9f0f7;--muted:#8fa1b5;--accent:#5cb3ff;--accent2:#86d6ff;--green:#59d39b;--red:#ef7178;--warn:#ffca63;
+  --shadow:0 14px 50px rgba(0,0,0,.28);--r:10px;
+}
+*{box-sizing:border-box} html,body{height:100%;margin:0} body{font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
+button,input,textarea,select{font:inherit} button{border:1px solid var(--border2);background:var(--panel2);color:var(--text);border-radius:7px;padding:7px 10px;cursor:pointer} button:hover{background:#203047} button.primary{background:#194a76;border-color:#2b6ca7} button.danger{background:#4b2025;border-color:#71373f}
+#app{height:100%;display:grid;grid-template-rows:56px 1fr}
+.topbar{display:flex;align-items:center;gap:8px;padding:0 12px;border-bottom:1px solid var(--border);background:#0d151f;z-index:20}
+.brand{font-weight:700;letter-spacing:.3px;margin-right:10px}.brand small{display:block;font-weight:400;color:var(--muted);font-size:10px}
+.topbar .spacer{flex:1}.status{font-size:12px;color:var(--muted);padding:0 8px}.btn-icon{width:34px;padding:7px 0}
+.main{min-height:0;display:grid;grid-template-columns:250px minmax(0,1fr) 300px}
+.sidebar,.inspector{background:var(--panel);overflow:auto}.sidebar{border-right:1px solid var(--border)}.inspector{border-left:1px solid var(--border)}
+.section{padding:12px;border-bottom:1px solid var(--border)}.section h3{font-size:12px;text-transform:uppercase;color:var(--muted);letter-spacing:.7px;margin:0 0 9px}
+.palette{display:grid;gap:7px}.palette-item{padding:9px;border:1px solid var(--border);background:var(--panel2);border-radius:8px;cursor:grab;display:flex;align-items:center;gap:9px}.palette-item:hover{border-color:var(--accent)}.palette-item .ico{width:27px;height:27px;border-radius:7px;display:grid;place-items:center;background:#202e3f}.palette-item b{font-size:12px}.palette-item span{font-size:10px;color:var(--muted)}
+.help{font-size:11px;line-height:1.45;color:var(--muted)}
+.canvas-wrap{position:relative;overflow:hidden;background:#0a1017}
+#canvas{position:absolute;inset:0;overflow:hidden;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:24px 24px;user-select:none}
+#world{position:absolute;left:0;top:0;transform-origin:0 0}.edges{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}.edge{fill:none;stroke:#5e7790;stroke-width:2.1}.edge.replication{stroke:#b38bff;stroke-dasharray:8 6}.edge.selected{stroke:var(--accent2);stroke-width:3.2}.edge-halo{fill:none;stroke:rgba(86,178,255,.12);stroke-width:9}.edge.preview{stroke:var(--accent2);stroke-width:3;stroke-dasharray:6 6;opacity:.9}.port.connecting{background:var(--accent2);border-color:#fff;box-shadow:0 0 14px rgba(134,214,255,.95)}
+.node{position:absolute;width:190px;min-width:190px;max-width:420px;min-height:80px;height:auto;overflow:visible;background:linear-gradient(180deg,#172330,#131d28);border:1px solid #33465d;border-radius:10px;box-shadow:0 12px 35px rgba(0,0,0,.32);cursor:move;user-select:none}.node.selected{border-color:var(--accent);box-shadow:0 0 0 2px rgba(92,179,255,.16),var(--shadow)}.node.label-highlight{border-color:var(--warn);box-shadow:0 0 0 2px rgba(255,202,99,.20),0 0 24px rgba(255,202,99,.16)}.label-filter{display:flex;flex-wrap:wrap;gap:5px}.label-editor{display:flex;flex-wrap:wrap;gap:5px;padding:7px;border:1px solid var(--border);border-radius:8px;background:#0f1720;min-height:38px}.label-token{display:flex;align-items:center;gap:4px;padding:3px 6px;border:1px solid #39536c;border-radius:999px;background:#162534;font-size:9px;color:#cfe0ee;max-width:100%}.label-token button{border:0;background:transparent;padding:0;color:#8fa1b5;font-size:11px;line-height:1}.label-editor-input{flex:1;min-width:120px;border:0!important;background:transparent!important;padding:3px 2px!important;outline:none}.label-editor-actions{display:flex;gap:6px;margin-top:6px}.label-hint{font-size:10px;color:var(--muted);line-height:1.4;margin-top:5px}.label-filter button{font-size:10px;padding:5px 7px}.label-filter button.active{border-color:var(--warn);color:#ffe3a0;background:#3a2d12}.label-filter .label-count{color:var(--muted);font-size:10px;width:100%;margin-top:2px}.node .head{display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:start;gap:8px;padding:10px 10px 7px}.node .head>*{min-width:0}.node .icon{width:28px;height:28px;border-radius:7px;display:grid;place-items:center;background:#223246;flex:none}.node .title-wrap{min-width:0}.node .title{font-size:12px;font-weight:700;line-height:1.15;overflow-wrap:anywhere}.node .sub{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.35;white-space:normal;overflow-wrap:anywhere;word-break:break-word}.node .body{padding:0 10px 11px;min-width:0;overflow-wrap:anywhere}.node .body>*{max-width:100%}.chips{display:flex;flex-wrap:wrap;gap:4px;align-items:flex-start}.chip{font-size:9px;padding:3px 5px;border:1px solid #33465d;border-radius:999px;color:#bdd1e3;background:#162230;max-width:100%;overflow-wrap:anywhere}.details{margin-top:7px;border-top:1px solid #2a394b;padding-top:5px}.detail-row{padding:5px 0;border-bottom:1px solid rgba(42,57,75,.7);min-width:0}.detail-row:last-child{border-bottom:0}.detail-title{font-size:10px;font-weight:700;color:#dce8f3;line-height:1.25;overflow-wrap:anywhere}.detail-meta{font-size:9px;color:#8fa1b5;line-height:1.35;margin-top:3px;white-space:normal;overflow-wrap:anywhere;word-break:break-word}.detail-chips{display:flex;gap:3px;flex-wrap:wrap;margin-top:3px;align-items:flex-start}.node .expand{margin-left:0;border:0;background:transparent;padding:2px;color:var(--muted);font-size:14px;line-height:1}.node .expand:hover{color:var(--text)}
+.port{position:absolute;box-sizing:border-box;width:10px;height:10px;border-radius:50%;background:#263c53;border:2px solid #5f7b97;cursor:crosshair;z-index:4}.port.in{left:-5px;top:50%;transform:translateY(-50%)}.port.out{right:-5px;top:50%;transform:translateY(-50%)}.port.top{top:-5px;left:50%;transform:translateX(-50%)}.port.bottom{bottom:-5px;left:50%;transform:translateX(-50%)}.port.active{background:var(--accent);border-color:#d7f0ff;box-shadow:0 0 12px rgba(92,179,255,.8)}
+.empty{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}.empty .card{padding:24px 28px;border:1px dashed #3a4f66;border-radius:14px;background:rgba(16,24,34,.82);text-align:center}.empty b{display:block;font-size:16px;margin-bottom:6px}.empty p{margin:0;color:var(--muted);font-size:12px}
+.inspector-content{padding:12px}.muted{color:var(--muted);font-size:11px}.field{margin:0 0 10px}.field label{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px}.field input,.field textarea,.field select{width:100%;background:#0f1720;color:var(--text);border:1px solid var(--border2);border-radius:7px;padding:7px 8px}.field textarea{min-height:68px;resize:vertical}.row{display:grid;grid-template-columns:1fr 1fr;gap:7px}.actions{display:flex;gap:7px;flex-wrap:wrap}.list{border:1px solid var(--border);border-radius:8px;overflow:hidden}.list-item{padding:8px 9px;background:#121c27;border-bottom:1px solid var(--border);font-size:11px}.list-item:last-child{border-bottom:0}.list-item strong{display:block}.list-item small{color:var(--muted)}
+.badge{display:inline-block;font-size:9px;padding:3px 6px;border-radius:999px;border:1px solid var(--border2);color:#c4d2df}.badge.green{border-color:#2d6f56;color:#86e1b6}.badge.yellow{border-color:#6f5e2d;color:#ffd87f}.badge.red{border-color:#6e343a;color:#ff9b9f}.node-measure{pointer-events:none;overflow:visible}.inspector-title{margin:0 0 8px;font-size:14px}.type-badge{display:inline-block;font-size:9px;padding:3px 7px;border:1px solid var(--border2);border-radius:999px;color:#bdd1e3;background:#162230;margin-bottom:10px}.inner-section{padding:0;border:0;margin-top:14px}.inner-section h3{font-size:11px;margin:0 0 8px}.section-help{margin-bottom:9px;line-height:1.45}.empty-details{padding:8px 0 10px}.custom-detail-editor{padding:9px;background:#0f1720;border:1px solid var(--border);border-radius:8px;margin-bottom:8px}.custom-detail-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}.custom-detail-head strong{font-size:10px;color:#cddbe8}.custom-detail-head .danger{padding:4px 7px;font-size:10px}.full-width{width:100%}.attached-service-editor{border-color:#39536c}.attached-service-editor .field{margin-bottom:8px}
+.toast{position:fixed;right:15px;bottom:15px;background:#172433;border:1px solid var(--border2);padding:9px 12px;border-radius:8px;opacity:0;transform:translateY(8px);pointer-events:none;transition:.18s;z-index:50;font-size:12px}.toast.show{opacity:1;transform:none}
+.dialog-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;place-items:center;z-index:100}.dialog-backdrop.show{display:grid}.dialog{width:min(560px,92vw);background:var(--panel);border:1px solid var(--border2);border-radius:12px;box-shadow:var(--shadow);padding:16px}.dialog h2{font-size:15px;margin:0 0 8px}.dialog .footer{display:flex;justify-content:flex-end;gap:7px;margin-top:14px}
+@media (max-width:1050px){.main{grid-template-columns:210px minmax(0,1fr) 270px}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="topbar">
+    <div class="brand">IT Infrastructure Sketch Builder<small>standalone • no server required</small></div>
+    <button id="newBtn">New</button><button id="saveBtn" class="primary">Save JSON</button><button id="loadBtn">Load JSON</button><button id="svgBtn">Export SVG</button>
+    <div class="spacer"></div><button id="autoBtn">Auto Layout</button><button id="fitBtn">Fit</button><button id="expandBtn">Expand All</button><button id="collapseBtn">Collapse All</button>
+    <div class="status" id="status">Ready</div>
+  </div>
+  <div class="main">
+    <aside class="sidebar">
+      <div class="section"><h3>Build from sketch</h3><div class="help">Drag a component onto the canvas, or double-click it. Select a node to edit it. <b>Drag from the blue output dot to another node's input dot</b> to create a connection.</div></div>
+      <div class="section"><h3>Network</h3><div id="networkPalette" class="palette"></div></div>
+      <div class="section"><h3>Systems</h3><div id="systemsPalette" class="palette"></div></div>
+      <div class="section"><h3>Identity & Cloud</h3><div id="identityPalette" class="palette"></div></div>
+      <div class="section"><h3>Security & Services</h3><div id="servicePalette" class="palette"></div></div>
+    </aside>
+    <section class="canvas-wrap" id="canvasWrap"><div id="canvas"><div id="world"><svg id="edges" class="edges" width="5000" height="5000"></svg><div id="nodes"></div></div><div id="empty" class="empty"><div class="card"><b>Start sketching your infrastructure</b><p>Drag a component here or double-click one in the palette.</p></div></div></div></section>
+    <aside class="inspector"><div id="inspectorContent" class="inspector-content"><h3 style="margin:0 0 7px;font-size:14px">Inspector</h3><div class="muted">Select a node or connection to edit it.</div></div></aside>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<div class="dialog-backdrop" id="dialogBackdrop"><div class="dialog"><h2 id="dialogTitle"></h2><div id="dialogBody"></div><div class="footer"><button id="dialogCancel">Cancel</button><button id="dialogOk" class="primary">OK</button></div></div></div>
+<input id="fileInput" type="file" accept="application/json,.json" hidden>
+<script>(() => {
+  'use strict';
+
+  /* ============================================================
+     VARIABLES
+     ============================================================ */
+
+  const $ = (id) => document.getElementById(id);
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+  const STORAGE_KEY = 'it-sketch-draft';
+  const GRID_SIZE = 10;
+  const NODE_MIN_WIDTH = 190;
+  const NODE_MAX_WIDTH = 420;
+  const NODE_MIN_HEIGHT = 80;
+
+  const TYPES = {
+    internet:{label:'Internet',icon:'☁',cat:'network',color:'#3b6382',desc:'External network / WAN'},
+    publicIp:{label:'Public IP',icon:'◎',cat:'network',color:'#446f95',desc:'External IP address'},
+    router:{label:'Router',icon:'↔',cat:'network',color:'#496c88',desc:'Layer 3 router'},
+    switch:{label:'Switch',icon:'⌘',cat:'network',color:'#465c76',desc:'Network switch'},
+    vlan:{label:'VLAN',icon:'▦',cat:'network',color:'#555c8a',desc:'Logical network segment'},
+    gateway:{label:'Gateway',icon:'⇥',cat:'network',color:'#5a738c',desc:'VLAN / subnet gateway'},
+    subnet:{label:'Subnet',icon:'◫',cat:'network',color:'#4f6d65',desc:'IP subnet'},
+    firewall:{label:'Sophos Firewall',icon:'🛡',cat:'security',color:'#6e5640',desc:'Sophos XG / XGS firewall'},
+    server:{label:'Server',icon:'▣',cat:'systems',color:'#4d5f72',desc:'Physical or virtual server'},
+    vm:{label:'Virtual Machine',icon:'◈',cat:'systems',color:'#4f637c',desc:'VM guest'},
+    hypervisor:{label:'Hypervisor',icon:'⬡',cat:'systems',color:'#665e82',desc:'Hypervisor host'},
+    storage:{label:'Storage',icon:'▤',cat:'systems',color:'#536c72',desc:'NAS / SAN / storage'},
+    backup:{label:'Backup',icon:'⟳',cat:'systems',color:'#506c64',desc:'Backup infrastructure'},
+    ad:{label:'Active Directory',icon:'AD',cat:'identity',color:'#5e5f8b',desc:'On-premises directory'},
+    dc:{label:'Domain Controller',icon:'DC',cat:'identity',color:'#5c6f95',desc:'AD DS domain controller'},
+    entra:{label:'Entra ID',icon:'E',cat:'identity',color:'#49668a',desc:'Cloud identity'},
+    sync:{label:'Entra Connect',icon:'⇄',cat:'identity',color:'#4c7080',desc:'Directory synchronization'},
+    m365:{label:'Microsoft 365',icon:'M',cat:'identity',color:'#53678d',desc:'Microsoft 365 tenant'},
+    endpoint:{label:'Endpoint',icon:'▤',cat:'systems',color:'#536474',desc:'PC, laptop or managed endpoint'},
+    dns:{label:'DNS',icon:'D',cat:'service',color:'#596b82',desc:'DNS service'},
+    dhcp:{label:'DHCP',icon:'H',cat:'service',color:'#5e6f74',desc:'DHCP service'},
+    service:{label:'Service',icon:'⚙',cat:'service',color:'#645d72',desc:'Generic service'},
+    vpn:{label:'VPN',icon:'⌁',cat:'security',color:'#596b7b',desc:'VPN tunnel'}
+  };
+
+  const SERVICE_CATALOG = [
+    'DHCP','DNS','NAT','Firewall','VPN','HTTP','HTTPS','RDP','SSH','SMB','LDAP','Kerberos',
+    'SQL','NTP','RADIUS','Syslog','Monitoring','Backup','Proxy','Reverse Proxy','WAF','EDR',
+    'AD DS','Entra Connect','Exchange','Teams','SharePoint','OneDrive','Intune','Defender','Custom'
+  ];
+
+  const TEMPLATES = {
+    internet:['WAN'], publicIp:['IPv4'], router:['L3'], switch:['L2'], vlan:['802.1Q'],
+    gateway:['Default GW'], subnet:['CIDR'], firewall:['NAT','Firewall','VPN','DHCP'],
+    server:['OS'], vm:['Guest'], hypervisor:['Host'], storage:['NAS/SAN'], backup:['Backup'],
+    ad:['AD DS','DNS'], dc:['LDAP','Kerberos','DNS','SYSVOL'], entra:['Identity'], sync:['Sync'],
+    m365:['Exchange','Teams','SharePoint'], endpoint:['Client'], dns:['53/TCP/UDP'],
+    dhcp:['67/68'], service:['TCP/UDP'], vpn:['Tunnel']
+  };
+
+  const PALETTE_GROUPS = {
+    network:['internet','publicIp','router','switch','vlan','gateway','subnet'],
+    systems:['server','vm','hypervisor','storage','backup','endpoint'],
+    identity:['ad','dc','entra','sync','m365'],
+    service:['firewall','vpn','dns','dhcp','service']
+  };
+
+  const app = {
+    model: blankModel(),
+    selected: null,
+    connectDrag: null,
+    nodeDrag: null,
+    pan: null,
+    dirty: false,
+    toastTimer: null,
+    activeLabels: []
+  };
+
+  /* ============================================================
+     MODEL HELPERS
+     ============================================================ */
+
+  function blankModel() {
+    return {
+      version: 3,
+      project: { name:'Untitled Infrastructure', updated:new Date().toISOString() },
+      nodes: [],
+      connections: [],
+      viewport: { x:0, y:0, scale:1 }
+    };
+  }
+
+  function uid(prefix='id') {
+    return `${prefix}_${Math.random().toString(36).slice(2,8)}_${Date.now().toString(36).slice(-5)}`;
+  }
+
+  function clone(value) {
+    return JSON.parse(JSON.stringify(value));
+  }
+
+  function snap(value) {
+    return Math.round(value / GRID_SIZE) * GRID_SIZE;
+  }
+
+  function getNode(id) {
+    return app.model.nodes.find((node) => node.id === id);
+  }
+
+  function getConnection(id) {
+    return app.model.connections.find((connection) => connection.id === id);
+  }
+
+  function markDirty() {
+    app.dirty = true;
+    app.model.project.updated = new Date().toISOString();
+    persistDraft();
+    $('status').textContent = 'Unsaved changes';
+  }
+
+  function selectItem(kind, id) {
+    app.selected = { kind, id };
+    app.connectDrag = null;
+    render();
+    renderInspector();
+  }
+
+  function addNode(type, x=220, y=160) {
+    const node = createBaseNode(type, snap(x), snap(y));
+    app.model.nodes.push(node);
+    app.selected = { kind:'node', id:node.id };
+    markDirty();
+    render();
+    renderInspector();
+    toast(`${node.name} added`);
+    return node;
+  }
+
+  function removeNode(id) {
+    app.model.nodes = app.model.nodes.filter((node) => node.id !== id);
+    app.model.connections = app.model.connections.filter((connection) => connection.from !== id && connection.to !== id);
+    if (app.selected?.id === id) app.selected = null;
+    markDirty();
+    render();
+    renderInspector();
+  }
+
+  function toggleExpanded(id) {
+    const node = getNode(id);
+    if (!node) return;
+    node.expanded = !node.expanded;
+    markDirty();
+    render();
+    renderInspector();
+  }
+
+  function createBaseNode(type, x, y) {
+    const definition = TYPES[type] || TYPES.service;
+    const node = {
+      id:uid(type),
+      type,
+      name:definition.label,
+      description:definition.desc,
+      x,
+      y,
+      w:NODE_MIN_WIDTH,
+      h:NODE_MIN_HEIGHT,
+      expanded:false,
+      props:{},
+      attachedServices:[],
+      customDetails:[],
+      labels:[]
+    };
+
+    const props = {
+      publicIp:{address:'203.0.113.10',label:'Public WAN IP'},
+      vlan:{id:'10',name:'Servers',subnet:'10.10.20.0/24',gateway:'10.10.20.1'},
+      gateway:{address:'10.10.20.1',vlan:'10'},
+      subnet:{cidr:'10.10.20.0/24'},
+      firewall:{model:'XGS 136',serial:'',wan:['203.0.113.10'],lan:['10.10.0.1'],dhcp:false,dns:true,vpn:true,natRules:[{name:'HTTPS Web',publicPort:'443',protocol:'TCP',target:'10.10.20.15:443'}],firewallRules:[{name:'LAN to Internet',source:'LAN',destination:'Any',service:'Any',action:'Allow'}]},
+      ad:{domain:'corp.example.local',site:'HQ',functionalLevel:'2019'},
+      dc:{hostname:'DC01',ip:'10.10.20.11',roles:['AD DS','DNS'],site:'HQ'},
+      sync:{status:'Healthy',scope:'Users, Groups',lastSync:'Just now'},
+      m365:{tenant:'contoso.onmicrosoft.com',users:'250',services:['Exchange Online','Teams','SharePoint Online','OneDrive','Intune','Defender']},
+      server:{hostname:'APP01',ip:'10.10.20.15',os:'Windows Server 2022'},
+      vm:{name:'VM01',ip:'10.10.20.25',host:'HV01',os:'Windows Server 2022'},
+      endpoint:{hostname:'PC-001',ip:'10.10.30.21',user:'user@example.com'},
+      dns:{host:'DNS01',ip:'10.10.20.11'},
+      dhcp:{scope:'10.10.30.0/24',gateway:'10.10.30.1',dns:'10.10.20.11'},
+      service:{service:'HTTPS',port:'443',protocol:'TCP'},
+      vpn:{kind:'Site-to-site',remote:'Branch A',status:'Up'}
+    }[type];
+
+    node.props = props ? clone(props) : {};
+    node.labels = (TEMPLATES[type] || []).slice();
+    node.attachedServices = getDefaultAttachedServices(type, node.props);
+    return node;
+  }
+
+  function createAttachedService(name, options={}) {
+    return {
+      id:uid('svc'),
+      name:String(name || 'Custom'),
+      status:String(options.status || 'Configured'),
+      scope:String(options.scope || 'Unspecified'),
+      protocol:String(options.protocol || ''),
+      port:String(options.port || ''),
+      notes:String(options.notes || '')
+    };
+  }
+
+  function getDefaultAttachedServices(type, props={}) {
+    const defaults = {
+      firewall:[
+        createAttachedService('DNS',{status:props.dns ? 'Enabled' : 'Disabled',scope:'Firewall / resolver'}),
+        createAttachedService('VPN',{status:props.vpn ? 'Enabled' : 'Disabled',scope:'Site-to-site / remote access'}),
+        createAttachedService('NAT',{status:'Configured',scope:'Public IP / port forwards'}),
+        createAttachedService('Firewall',{status:'Configured',scope:'WAN / LAN policy'})
+      ],
+      ad:[createAttachedService('AD DS',{status:'Provided',scope:'Domain services'}),createAttachedService('DNS',{status:'Provided',scope:'Domain DNS'})],
+      dc:[createAttachedService('AD DS',{status:'Running',scope:'Domain Controller'}),createAttachedService('DNS',{status:'Running',scope:'Domain DNS'}),createAttachedService('Kerberos',{status:'Running',scope:'Domain authentication'})],
+      m365:[createAttachedService('Exchange',{status:'Cloud',scope:'Microsoft 365 tenant'}),createAttachedService('Teams',{status:'Cloud',scope:'Microsoft 365 tenant'})]
+    };
+    return clone(defaults[type] || []);
+  }
+
+  function normalizeModel(data) {
+    const normalized = blankModel();
+    normalized.version = Number(data?.version || 3);
+    normalized.project = { ...normalized.project, ...(data?.project || {}) };
+    normalized.nodes = Array.isArray(data?.nodes) ? data.nodes.map((raw) => {
+      const base = createBaseNode(raw.type || 'service', Number(raw.x) || 100, Number(raw.y) || 100);
+      return {
+        ...base,
+        ...raw,
+        w:NODE_MIN_WIDTH,
+        h:NODE_MIN_HEIGHT,
+        props:raw.props || base.props || {},
+        attachedServices:Array.isArray(raw.attachedServices) ? raw.attachedServices.map(normalizeAttachedService) : migrateLegacyServices(raw, base),
+        customDetails:Array.isArray(raw.customDetails) ? raw.customDetails.map(normalizeCustomDetail) : [],
+        labels:Array.isArray(raw.labels) ? raw.labels.map(String).filter(Boolean) : (base.labels || []).slice()
+      };
+    }) : [];
+    normalized.connections = Array.isArray(data?.connections) ? data.connections.map(normalizeConnection) : [];
+    normalized.viewport = { ...normalized.viewport, ...(data?.viewport || {}) };
+    return normalized;
+  }
+
+  function normalizeAttachedService(service={}) {
+    return {
+      id:service.id || uid('svc'),
+      name:String(service.name ?? 'Custom'),
+      status:String(service.status ?? 'Configured'),
+      scope:String(service.scope ?? 'Unspecified'),
+      protocol:String(service.protocol ?? ''),
+      port:String(service.port ?? ''),
+      notes:String(service.notes ?? '')
+    };
+  }
+
+  function migrateLegacyServices(rawNode, baseNode) {
+    const services = Array.isArray(baseNode.attachedServices) ? clone(baseNode.attachedServices) : [];
+    if (rawNode.type === 'firewall' && rawNode.props) {
+      if (rawNode.props.dhcp === true) services.push(createAttachedService('DHCP',{status:'Enabled',scope:'Define specific VLAN / subnet'}));
+      if (rawNode.props.dns === true && !services.some((item) => item.name === 'DNS')) services.push(createAttachedService('DNS',{status:'Enabled',scope:'Firewall / resolver'}));
+      if (rawNode.props.vpn === true && !services.some((item) => item.name === 'VPN')) services.push(createAttachedService('VPN',{status:'Enabled',scope:'Site-to-site / remote access'}));
+    }
+    return services.map(normalizeAttachedService);
+  }
+
+  function normalizeCustomDetail(detail={}) {
+    return {
+      id:detail.id || uid('detail'),
+      title:String(detail.title ?? 'Note'),
+      text:String(detail.text ?? ''),
+      chips:Array.isArray(detail.chips) ? detail.chips.map(String) : []
+    };
+  }
+
+  function normalizeConnection(connection={}) {
+    return {
+      id:connection.id || uid('con'),
+      from:connection.from,
+      to:connection.to,
+      fromPort:connection.fromPort || 'out',
+      toPort:connection.toPort || 'in',
+      kind:connection.kind || 'network',
+      label:connection.label || 'Connection',
+      protocol:connection.protocol || '',
+      port:connection.port || '',
+      schedule:connection.schedule || '',
+      direction:connection.direction || '',
+      notes:connection.notes || ''
+    };
+  }
+
+  /* ============================================================
+     DATA → EXPANDED CHILD DETAILS
+     ============================================================ */
+
+  function getExpandedDetails(node) {
+    if (!node.expanded) return [];
+
+    const p = node.props || {};
+    const details = [];
+    const add = (title, text='', chips=[]) => details.push({ title, text, chips:chips.filter(Boolean) });
+
+    if (node.type === 'firewall') {
+      add('WAN Interfaces', (p.wan || []).join(' • ') || 'None configured');
+      add('LAN Interfaces', (p.lan || []).join(' • ') || 'None configured');
+      (p.natRules || []).forEach((rule, index) => add(`NAT ${index + 1}: ${rule.name || 'Port Forward'}`, `${rule.protocol || 'TCP'} ${rule.publicPort || ''} → ${rule.target || ''}`));
+      (p.firewallRules || []).forEach((rule, index) => add(`Rule ${index + 1}: ${rule.name || 'Firewall Rule'}`, `${rule.source || 'Any'} → ${rule.destination || 'Any'} • ${rule.service || 'Any'} • ${rule.action || 'Allow'}`));
+    }
+
+    if (node.type === 'ad') {
+      add('Domain', p.domain || 'AD Domain', [p.site || 'HQ', p.functionalLevel || '']);
+      add('Domain Controllers', 'AD DS • DNS • Kerberos • LDAP • SYSVOL');
+      add('Replication', 'Bidirectional • RPC • Site aware');
+      add('FSMO Roles', 'Schema • Domain Naming • RID • PDC • Infrastructure');
+    }
+
+    if (node.type === 'dc') {
+      add('Hostname', p.hostname || 'DC01');
+      add('IP Address', p.ip || '');
+      add('Site', p.site || 'HQ');
+      add('Roles', (p.roles || []).join(' • ') || 'AD DS');
+      add('Replication', 'Inbound / Outbound • RPC');
+    }
+
+    if (node.type === 'sync') {
+      add('Status', p.status || 'Unknown');
+      add('Scope', p.scope || 'Users, Groups');
+      add('Last Sync', p.lastSync || '');
+      add('Direction', 'On-premises AD → Entra ID');
+    }
+
+    if (node.type === 'm365') {
+      add('Tenant', p.tenant || '');
+      add('Users', String(p.users || ''));
+      (p.services || []).forEach((service) => add(service, 'Microsoft 365 cloud service'));
+    }
+
+    if (node.type === 'server') {
+      add('Hostname', p.hostname || '');
+      add('IP Address', p.ip || '');
+      add('Operating System', p.os || '');
+    }
+
+    if (node.type === 'vlan') {
+      add('VLAN ID', p.id || '');
+      add('Subnet', p.subnet || '');
+      add('Gateway', p.gateway || '');
+    }
+
+    if (node.type === 'gateway') {
+      add('Gateway IP', p.address || '');
+      add('VLAN', p.vlan || '');
+    }
+
+    if (node.type === 'publicIp') add('Address', p.address || '');
+    if (node.type === 'dns') add('Host', p.host || '', [p.ip || '']);
+    if (node.type === 'dhcp') add('Scope', p.scope || '', [p.gateway || '', p.dns || '']);
+    if (node.type === 'service') add('Service', p.service || 'Service', [`${p.protocol || 'TCP'}:${p.port || ''}`]);
+    if (node.type === 'vpn') {
+      add('Type', p.kind || 'Site-to-site');
+      add('Remote', p.remote || '');
+      add('Status', p.status || 'Unknown');
+    }
+
+    (node.attachedServices || []).forEach((service) => {
+      const chips = [service.status, service.protocol && service.port ? `${service.protocol}:${service.port}` : '', service.scope].filter(Boolean);
+      add(service.name || 'Service', service.notes || service.scope || 'Attached service', chips);
+    });
+
+    node.customDetails.forEach((detail) => add(detail.title || 'Note', detail.text || '', detail.chips || []));
+    return details;
+  }
+
+  function createDetail(title, text='', chips=[]) {
+    return normalizeCustomDetail({ title, text, chips });
+  }
+
+  /* ============================================================
+     HTML / ESCAPING / UI HELPERS
+     ============================================================ */
+
+  function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>'"]/g, (character) => ({
+      '&':'&amp;', '<':'&lt;', '>':'&gt;', "'":'&#39;', '"':'&quot;'
+    }[character]));
+  }
+
+  function createElement(tag, className='', html='') {
+    const element = document.createElement(tag);
+    if (className) element.className = className;
+    if (html) element.innerHTML = html;
+    return element;
+  }
+
+  function toast(message) {
+    const element = $('toast');
+    element.textContent = message;
+    element.classList.add('show');
+    clearTimeout(app.toastTimer);
+    app.toastTimer = setTimeout(() => element.classList.remove('show'), 1800);
+  }
+
+  function fieldHtml(label, key, value, type='text', placeholder='') {
+    return `<div class="field"><label>${escapeHtml(label)}</label><input data-key="${escapeHtml(key)}" type="${type}" value="${escapeHtml(value)}" placeholder="${escapeHtml(placeholder)}"></div>`;
+  }
+
+  function selectHtml(label, key, value, options) {
+    return `<div class="field"><label>${escapeHtml(label)}</label><select data-key="${escapeHtml(key)}">${options.map((option) => `<option value="${escapeHtml(option)}" ${option === value ? 'selected' : ''}>${escapeHtml(option)}</option>`).join('')}</select></div>`;
+  }
+
+  function textareaHtml(label, key, value, placeholder='') {
+    return `<div class="field"><label>${escapeHtml(label)}</label><textarea data-key="${escapeHtml(key)}" placeholder="${escapeHtml(placeholder)}">${escapeHtml(value)}</textarea></div>`;
+  }
+
+  /* ============================================================
+     PALETTE
+     ============================================================ */
+
+  function buildPalette() {
+    Object.entries(PALETTE_GROUPS).forEach(([group, types]) => {
+      const container = $(group === 'network' ? 'networkPalette' : group === 'systems' ? 'systemsPalette' : group === 'identity' ? 'identityPalette' : 'servicePalette');
+      container.innerHTML = '';
+
+      types.forEach((type) => {
+        const definition = TYPES[type];
+        const item = createElement('div', 'palette-item');
+        item.draggable = true;
+        item.dataset.type = type;
+        item.innerHTML = `<div class="ico" style="background:${definition.color}33">${definition.icon}</div><div class="palette-copy"><b>${escapeHtml(definition.label)}</b><span>${escapeHtml(definition.desc)}</span></div>`;
+        item.addEventListener('dragstart', (event) => event.dataTransfer.setData('text/plain', type));
+        item.addEventListener('dblclick', () => addNode(type, 220 - app.model.viewport.x / app.model.viewport.scale, 160 - app.model.viewport.y / app.model.viewport.scale));
+        container.appendChild(item);
+      });
+    });
+  }
+
+  /* ============================================================
+     DYNAMIC NODE SIZING
+     ============================================================ */
+
+  function getNodeMarkup(node, measurement=false) {
+    const definition = TYPES[node.type] || TYPES.service;
+    const details = getExpandedDetails(node);
+    const chips = Array.isArray(node.labels) ? node.labels : [];
+    const detailsHtml = node.expanded && details.length
+      ? `<div class="details">${details.map((detail) => `
+          <div class="detail-row">
+            <div class="detail-title">${escapeHtml(detail.title)}</div>
+            ${detail.text ? `<div class="detail-meta">${escapeHtml(detail.text)}</div>` : ''}
+            ${detail.chips?.length ? `<div class="detail-chips">${detail.chips.map((chip) => `<span class="chip">${escapeHtml(chip)}</span>`).join('')}</div>` : ''}
+          </div>`).join('')}</div>`
+      : '';
+
+    return `
+      ${measurement ? '' : '<div class="port in" data-port="in"></div><div class="port out" data-port="out"></div>'}
+      <div class="head">
+        <div class="icon" style="background:${definition.color}33">${escapeHtml(definition.icon)}</div>
+        <div class="title-wrap">
+          <div class="title">${escapeHtml(node.name)}</div>
+          <div class="sub">${escapeHtml(node.description || definition.desc)}</div>
+        </div>
+        ${measurement ? '' : `<button class="expand" type="button" title="Expand details">${node.expanded ? '▾' : '▸'}</button>`}
+      </div>
+      <div class="body">
+        ${chips.length ? `<div class="chips">${chips.map((chip) => `<span class="chip">${escapeHtml(chip)}</span>`).join('')}</div>` : ''}
+        ${detailsHtml}
+      </div>`;
+  }
+
+  function measureNodeSize(node) {
+    const measurement = createElement('div', 'node node-measure');
+    measurement.innerHTML = getNodeMarkup(node, true);
+    measurement.style.position = 'absolute';
+    measurement.style.left = '-100000px';
+    measurement.style.top = '-100000px';
+    measurement.style.visibility = 'hidden';
+    measurement.style.width = 'max-content';
+    measurement.style.maxWidth = `${NODE_MAX_WIDTH}px`;
+    measurement.style.height = 'auto';
+    measurement.style.minHeight = `${NODE_MIN_HEIGHT}px`;
+    $('nodes').appendChild(measurement);
+
+    // First measure the natural width. Then lock that width and measure the wrapped height.
+    const naturalWidth = Math.ceil(measurement.scrollWidth + 2);
+    const width = Math.max(NODE_MIN_WIDTH, Math.min(NODE_MAX_WIDTH, naturalWidth));
+    measurement.style.width = `${width}px`;
+    const height = Math.max(NODE_MIN_HEIGHT, Math.ceil(measurement.scrollHeight + 2));
+
+    measurement.remove();
+    node.w = width;
+    node.h = height;
+  }
+
+  function measureAllNodes() {
+    app.model.nodes.forEach(measureNodeSize);
+  }
+
+  /* ============================================================
+     CONNECTION GEOMETRY
+     ============================================================ */
+
+  function getPortPoint(node, port='out') {
+    if (port === 'in') return { x:node.x, y:node.y + node.h / 2 };
+    if (port === 'out') return { x:node.x + node.w, y:node.y + node.h / 2 };
+    if (port === 'top') return { x:node.x + node.w / 2, y:node.y };
+    return { x:node.x + node.w / 2, y:node.y + node.h };
+  }
+
+  function buildEdgePath(nodeA, nodeB, fromPort='out', toPort='in') {
+    const start = getPortPoint(nodeA, fromPort);
+    const end = getPortPoint(nodeB, toPort);
+
+    if (Math.abs(end.x - start.x) >= Math.abs(end.y - start.y)) {
+      const distance = Math.max(50, Math.abs(end.x - start.x) * 0.45);
+      const direction = end.x >= start.x ? 1 : -1;
+      return `M ${start.x} ${start.y} C ${start.x + direction * distance} ${start.y}, ${end.x - direction * distance} ${end.y}, ${end.x} ${end.y}`;
+    }
+
+    const distance = Math.max(50, Math.abs(end.y - start.y) * 0.45);
+    const direction = end.y >= start.y ? 1 : -1;
+    return `M ${start.x} ${start.y} C ${start.x} ${start.y + direction * distance}, ${end.x} ${end.y - direction * distance}, ${end.x} ${end.y}`;
+  }
+
+  function getWorldPoint(clientX, clientY) {
+    const rect = $('canvas').getBoundingClientRect();
+    return {
+      x:(clientX - rect.left - app.model.viewport.x) / app.model.viewport.scale,
+      y:(clientY - rect.top - app.model.viewport.y) / app.model.viewport.scale
+    };
+  }
+
+  /* ============================================================
+     RENDERING
+     ============================================================ */
+
+  function render() {
+    measureAllNodes();
+    renderWorldTransform();
+    renderConnections();
+    renderNodes();
+    renderStatus();
+  }
+
+  function renderWorldTransform() {
+    const world = $('world');
+    world.style.transform = `translate(${app.model.viewport.x}px, ${app.model.viewport.y}px) scale(${app.model.viewport.scale})`;
+    $('empty').style.display = app.model.nodes.length ? 'none' : 'grid';
+  }
+
+  function renderConnections() {
+    const svg = $('edges');
+    svg.innerHTML = '';
+
+    app.model.connections.forEach((connection) => {
+      const fromNode = getNode(connection.from);
+      const toNode = getNode(connection.to);
+      if (!fromNode || !toNode) return;
+
+      const path = document.createElementNS(SVG_NS, 'path');
+      const classes = ['edge'];
+      if (connection.kind === 'replication') classes.push('replication');
+      if (app.selected?.kind === 'connection' && app.selected.id === connection.id) classes.push('selected');
+      path.setAttribute('class', classes.join(' '));
+      path.setAttribute('d', buildEdgePath(fromNode, toNode, connection.fromPort, connection.toPort));
+      path.style.pointerEvents = 'stroke';
+      path.dataset.id = connection.id;
+      path.addEventListener('click', (event) => {
+        event.stopPropagation();
+        selectItem('connection', connection.id);
+      });
+      svg.appendChild(path);
+    });
+
+    if (app.connectDrag) renderConnectionPreview(svg);
+  }
+
+  function renderConnectionPreview(svg) {
+    const sourceNode = getNode(app.connectDrag.nodeId);
+    if (!sourceNode) return;
+
+    const start = getPortPoint(sourceNode, app.connectDrag.port);
+    const end = app.connectDrag.current;
+    const distance = Math.max(50, Math.abs(end.x - start.x) * 0.45);
+    const direction = end.x >= start.x ? 1 : -1;
+    const path = document.createElementNS(SVG_NS, 'path');
+    path.setAttribute('class', 'edge preview');
+    path.setAttribute('d', `M ${start.x} ${start.y} C ${start.x + direction * distance} ${start.y}, ${end.x - direction * distance} ${end.y}, ${end.x} ${end.y}`);
+    svg.appendChild(path);
+  }
+
+  function renderNodes() {
+    const container = $('nodes');
+    container.innerHTML = '';
+
+    app.model.nodes.forEach((node) => {
+      const isSelected = app.selected?.kind === 'node' && app.selected.id === node.id;
+      const isLabelHighlighted = app.activeLabels.length > 0 && (node.labels || []).some((label) => app.activeLabels.includes(label));
+      const classes = ['node'];
+      if (isSelected) classes.push('selected');
+      if (isLabelHighlighted) classes.push('label-highlight');
+      const element = createElement('div', classes.join(' '));
+      element.dataset.id = node.id;
+      element.style.left = `${node.x}px`;
+      element.style.top = `${node.y}px`;
+      element.style.width = `${node.w}px`;
+      element.style.height = `${node.h}px`;
+      element.innerHTML = getNodeMarkup(node, false);
+
+      bindNodeEvents(element, node);
+      container.appendChild(element);
+    });
+  }
+
+  function renderStatus() {
+    $('status').textContent = app.dirty ? 'Unsaved changes' : (app.model.project.name || 'Ready');
+  }
+
+  function bindNodeEvents(element, node) {
+    element.addEventListener('mousedown', (event) => startNodeDrag(event, node.id));
+    element.addEventListener('click', (event) => {
+      if (event.target.closest('.expand') || event.target.closest('.port')) return;
+      selectItem('node', node.id);
+    });
+
+    const expandButton = element.querySelector('.expand');
+    if (expandButton) {
+      expandButton.addEventListener('click', (event) => {
+        event.stopPropagation();
+        toggleExpanded(node.id);
+      });
+    }
+
+    element.querySelectorAll('.port').forEach((port) => {
+      port.title = port.dataset.port === 'out' ? 'Drag to another node input' : 'Drop connection here';
+      port.addEventListener('pointerdown', (event) => startConnectionDrag(event, node.id, port.dataset.port));
+      port.addEventListener('click', (event) => event.stopPropagation());
+    });
+  }
+
+  /* ============================================================
+     NODE DRAGGING / PANNING
+     ============================================================ */
+
+  function startNodeDrag(event, nodeId) {
+    if (event.button !== 0 || event.target.closest('.port') || event.target.closest('.expand')) return;
+    const node = getNode(nodeId);
+    if (!node) return;
+    selectItem('node', nodeId);
+
+    const point = getWorldPoint(event.clientX, event.clientY);
+    app.nodeDrag = { id:nodeId, offsetX:point.x-node.x, offsetY:point.y-node.y };
+    document.addEventListener('mousemove', handleNodeDrag);
+    document.addEventListener('mouseup', stopNodeDrag, { once:true });
+  }
+
+  function handleNodeDrag(event) {
+    if (!app.nodeDrag) return;
+    const point = getWorldPoint(event.clientX, event.clientY);
+    const node = getNode(app.nodeDrag.id);
+    if (!node) return;
+    node.x = snap(point.x - app.nodeDrag.offsetX);
+    node.y = snap(point.y - app.nodeDrag.offsetY);
+    markDirty();
+    render();
+  }
+
+  function stopNodeDrag() {
+    app.nodeDrag = null;
+    document.removeEventListener('mousemove', handleNodeDrag);
+  }
+
+  function startPan(event) {
+    app.pan = {
+      startX:event.clientX,
+      startY:event.clientY,
+      originX:app.model.viewport.x,
+      originY:app.model.viewport.y
+    };
+    document.addEventListener('mousemove', handlePan);
+    document.addEventListener('mouseup', stopPan, { once:true });
+  }
+
+  function handlePan(event) {
+    if (!app.pan) return;
+    app.model.viewport.x = app.pan.originX + (event.clientX - app.pan.startX);
+    app.model.viewport.y = app.pan.originY + (event.clientY - app.pan.startY);
+    render();
+  }
+
+  function stopPan() {
+    app.pan = null;
+    document.removeEventListener('mousemove', handlePan);
+  }
+
+  /* ============================================================
+     CONNECTION DRAWING
+     ============================================================ */
+
+  function startConnectionDrag(event, nodeId, port) {
+    if (event.button !== 0) return;
+    event.preventDefault();
+    event.stopPropagation();
+
+    app.connectDrag = {
+      nodeId,
+      port,
+      current:getWorldPoint(event.clientX, event.clientY)
+    };
+
+    document.addEventListener('pointermove', handleConnectionDrag);
+    document.addEventListener('pointerup', finishConnectionDrag, { once:true });
+    render();
+  }
+
+  function handleConnectionDrag(event) {
+    if (!app.connectDrag) return;
+    app.connectDrag.current = getWorldPoint(event.clientX, event.clientY);
+
+    document.querySelectorAll('.port.active').forEach((port) => port.classList.remove('active'));
+    const target = document.elementFromPoint(event.clientX, event.clientY)?.closest('.port');
+    if (target && target.dataset.port === 'in') target.classList.add('active');
+    render();
+  }
+
+  function finishConnectionDrag(event) {
+    if (!app.connectDrag) return;
+    const source = { ...app.connectDrag };
+    const targetPort = document.elementFromPoint(event.clientX, event.clientY)?.closest('.port');
+    document.querySelectorAll('.port.active').forEach((port) => port.classList.remove('active'));
+
+    if (targetPort?.dataset.port === 'in') {
+      const targetNode = targetPort.closest('.node');
+      const targetId = targetNode?.dataset.id;
+      if (targetId && targetId !== source.nodeId) createConnection(source.nodeId, source.port, targetId, 'in');
+      else cancelConnectionDrag();
+    } else {
+      cancelConnectionDrag();
+    }
+  }
+
+  function createConnection(sourceId, sourcePort, targetId, targetPort) {
+    let from = sourceId;
+    let fromPort = sourcePort;
+    let to = targetId;
+    let toPort = targetPort;
+
+    if (fromPort === 'in' && toPort === 'out') {
+      [from, to] = [to, from];
+      [fromPort, toPort] = [toPort, fromPort];
+    }
+
+    fromPort = fromPort === 'out' ? 'out' : 'out';
+    toPort = toPort === 'in' ? 'in' : 'in';
+
+    if (from === to) return cancelConnectionDrag();
+    if (app.model.connections.some((connection) => connection.from === from && connection.to === to)) {
+      cancelConnectionDrag();
+      toast('Connection already exists');
+      return;
+    }
+
+    const connection = normalizeConnection({
+      from,
+      to,
+      fromPort,
+      toPort,
+      kind:'network',
+      label:'Connection'
+    });
+
+    app.model.connections.push(connection);
+    app.selected = { kind:'connection', id:connection.id };
+    app.connectDrag = null;
+    markDirty();
+    render();
+    renderInspector();
+    toast('Connection created');
+  }
+
+  function cancelConnectionDrag() {
+    app.connectDrag = null;
+    render();
+  }
+
+  /* ============================================================
+     INSPECTOR
+     ============================================================ */
+
+  function renderInspector() {
+    const container = $('inspectorContent');
+    if (!app.selected) {
+      renderGlobalInspector(container);
+      return;
+    }
+
+    if (app.selected.kind === 'node') {
+      renderNodeInspector(container, getNode(app.selected.id));
+      return;
+    }
+
+    renderConnectionInspector(container, getConnection(app.selected.id));
+  }
+
+  function getNodeLabels(node) {
+    return Array.isArray(node?.labels) ? node.labels.map(String).map((label) => label.trim()).filter(Boolean) : [];
+  }
+
+  function setNodeLabels(node, labels) {
+    node.labels = Array.from(new Set((labels || []).map((label) => String(label).trim()).filter(Boolean)));
+  }
+
+  function addNodeLabel(node, label) {
+    const cleanLabel = String(label || '').trim();
+    if (!cleanLabel) return false;
+    const labels = getNodeLabels(node);
+    if (labels.some((item) => item.toLowerCase() === cleanLabel.toLowerCase())) return false;
+    labels.push(cleanLabel);
+    setNodeLabels(node, labels);
+    return true;
+  }
+
+  function removeNodeLabel(node, label) {
+    setNodeLabels(node, getNodeLabels(node).filter((item) => item !== label));
+  }
+
+  function getAvailableLabels() {
+    const labels = new Set();
+    app.model.nodes.forEach((node) => getNodeLabels(node).forEach((label) => labels.add(label)));
+    return Array.from(labels).sort((a,b) => a.localeCompare(b));
+  }
+
+  function renderGlobalInspector(container) {
+    const labels = getAvailableLabels();
+    container.innerHTML = `
+      <h3 class="inspector-title">Inspector</h3>
+      <div class="muted section-help">Nothing selected. Press one or more labels to highlight every model that uses them.</div>
+      <div class="section inner-section">
+        <h3>Highlight labels</h3>
+        <div class="label-filter">
+          ${labels.length ? labels.map((label) => `<button type="button" class="label-toggle ${app.activeLabels.includes(label) ? 'active' : ''}" data-label="${escapeHtml(label)}">${escapeHtml(label)}</button>`).join('') : '<div class="muted">No labels have been added to models yet.</div>'}
+          <div class="label-count">${app.activeLabels.length ? `${app.activeLabels.length} selected • ${app.model.nodes.filter((node) => getNodeLabels(node).some((label) => app.activeLabels.includes(label))).length} matching models` : 'Click a label to highlight matching models.'}</div>
+        </div>
+      </div>
+      <div class="section inner-section">
+        <h3>Quick actions</h3>
+        <div class="actions"><button id="clearLabelHighlights">Clear highlights</button><button id="selectAllLabelMatches">Select matching models</button></div>
+      </div>`;
+
+    container.querySelectorAll('.label-toggle').forEach((button) => {
+      button.addEventListener('click', () => {
+        const label = button.dataset.label;
+        app.activeLabels = app.activeLabels.includes(label)
+          ? app.activeLabels.filter((item) => item !== label)
+          : [...app.activeLabels, label];
+        render();
+        renderInspector();
+      });
+    });
+    container.querySelector('#clearLabelHighlights')?.addEventListener('click', () => {
+      app.activeLabels = [];
+      render();
+      renderInspector();
+    });
+    container.querySelector('#selectAllLabelMatches')?.addEventListener('click', () => {
+      const matches = app.model.nodes.filter(node => (node.labels || []).some(label => app.activeLabels.includes(label)));
+      if (matches.length) { app.selected = {kind:'node', id:matches[0].id}; }
+      render();
+      renderInspector();
+    });
+  }
+
+  function renderNodeInspector(container, node) {
+    if (!node) return;
+    const p = node.props || {};
+    const definition = TYPES[node.type] || TYPES.service;
+
+    let propertySection = '';
+    if (node.type === 'firewall') {
+      propertySection = `<div class="section inner-section"><h3>Firewall</h3>
+        ${fieldHtml('Model','props.model',p.model || '')}
+        ${fieldHtml('WAN IPs (comma separated)','props.wan',(p.wan || []).join(', '))}
+        ${fieldHtml('LAN IPs (comma separated)','props.lan',(p.lan || []).join(', '))}
+        <div class="actions"><button id="addNat">Add NAT rule</button><button id="addRule">Add firewall rule</button></div>
+      </div>`;
+    } else if (node.type === 'ad') {
+      propertySection = `<div class="section inner-section"><h3>Directory</h3>
+        ${fieldHtml('Domain','props.domain',p.domain || '')}
+        ${fieldHtml('Site','props.site',p.site || '')}
+        ${fieldHtml('Functional level','props.functionalLevel',p.functionalLevel || '')}
+      </div>`;
+    } else if (node.type === 'dc') {
+      propertySection = `<div class="section inner-section"><h3>Domain Controller</h3>
+        ${fieldHtml('Hostname','props.hostname',p.hostname || '')}
+        ${fieldHtml('IP address','props.ip',p.ip || '')}
+        ${fieldHtml('Site','props.site',p.site || '')}
+        ${fieldHtml('Roles (comma separated)','props.roles',(p.roles || []).join(', '))}
+      </div>`;
+    } else {
+      const editable = Object.entries(p).filter(([,value]) => ['string','number','boolean'].includes(typeof value));
+      propertySection = editable.length
+        ? `<div class="section inner-section"><h3>Properties</h3>${editable.map(([key,value]) => fieldHtml(formatKey(key), `props.${key}`, String(value))).join('')}</div>`
+        : '';
+    }
+
+    const customDetailsHtml = node.customDetails.length
+      ? node.customDetails.map((detail, index) => renderCustomDetailEditor(detail, index)).join('')
+      : `<div class="muted empty-details">No custom notes or child details yet.</div>`;
+
+    container.innerHTML = `
+      <h3 class="inspector-title">${escapeHtml(node.name)}</h3>
+      <div class="type-badge">${escapeHtml(definition.label)}</div>
+      ${fieldHtml('Name','name',node.name)}
+      ${textareaHtml('Placeholder / description','description',node.description || definition.desc,'Short description shown below the title')}
+      <div class="section inner-section">
+        <h3>Model labels</h3>
+        <div class="muted section-help">Labels belong to this model. Add or remove them here. When nothing is selected, these same labels become the global highlight selector.</div>
+        <div class="label-editor" id="nodeLabelEditor">
+          ${getNodeLabels(node).map((label) => `<span class="label-token">${escapeHtml(label)}<button type="button" class="remove-node-label" data-label="${escapeHtml(label)}" title="Remove label">×</button></span>`).join('')}
+          <input id="nodeLabelInput" class="label-editor-input" type="text" placeholder="Add label and press Enter">
+        </div>
+        <div class="label-editor-actions"><button type="button" id="addNodeLabel">Add label</button></div>
+        <div class="label-hint">Examples: Production, Critical, DHCP, VLAN 30, DMZ, Owner: IT.</div>
+      </div>
+      <div class="row">
+        <div class="field"><label>X</label><input data-key="x" type="number" value="${node.x}"></div>
+        <div class="field"><label>Y</label><input data-key="y" type="number" value="${node.y}"></div>
+      </div>
+      <div class="actions">
+        <button id="toggleExpand">${node.expanded ? 'Collapse' : 'Expand'} details</button>
+        <button id="deleteNode" class="danger">Delete</button>
+      </div>
+      ${propertySection}
+      <div class="section inner-section attached-services-section">
+        <h3>Attached services / capabilities</h3>
+        <div class="muted section-help">Add any service to any model. Use Scope to say where it actually applies, such as VLAN 20 only, one subnet, one interface, or the whole system.</div>
+        ${renderAttachedServiceEditors(node)}
+        <button id="addService" class="primary full-width">+ Add service / capability</button>
+      </div>
+      <div class="section inner-section custom-details-section">
+        <h3>Dynamic child details</h3>
+        <div class="muted section-help">Add notes or any custom child item. They appear inside this model when it is expanded.</div>
+        ${customDetailsHtml}
+        <button id="addDetail" class="primary full-width">+ Add note / child detail</button>
+      </div>`;
+
+    bindInspectorFields(container, node);
+    bindNodeInspectorButtons(container, node);
+  }
+
+  function renderAttachedServiceEditors(node) {
+    if (!(node.attachedServices || []).length) return '<div class="muted empty-details">No services attached yet.</div>';
+    return node.attachedServices.map((service, index) => `
+      <div class="custom-detail-editor attached-service-editor" data-service-id="${escapeHtml(service.id)}">
+        <div class="custom-detail-head"><strong>Service ${index + 1}</strong><button type="button" class="delete-service danger">Remove</button></div>
+        ${selectHtml('Service','service.name',service.name,SERVICE_CATALOG.concat(service.name && !SERVICE_CATALOG.includes(service.name) ? [service.name] : []))}
+        ${fieldHtml('Status','service.status',service.status)}
+        ${fieldHtml('Scope / applies to','service.scope',service.scope,'text','Example: VLAN 20 only / 10.10.20.0/24 / WAN interface')}
+        <div class="row">
+          <div class="field"><label>Protocol</label><input data-key="service.protocol" value="${escapeHtml(service.protocol)}" placeholder="TCP"></div>
+          <div class="field"><label>Port</label><input data-key="service.port" value="${escapeHtml(service.port)}" placeholder="443"></div>
+        </div>
+        ${textareaHtml('Notes','service.notes',service.notes,'Optional configuration notes')}
+      </div>`).join('');
+  }
+
+  function renderCustomDetailEditor(detail, index) {
+    return `<div class="custom-detail-editor" data-detail-id="${escapeHtml(detail.id)}">
+      <div class="custom-detail-head"><strong>Child ${index + 1}</strong><button type="button" class="delete-detail danger">Remove</button></div>
+      ${fieldHtml('Title','detail.title',detail.title)}
+      ${textareaHtml('Text','detail.text',detail.text,'Optional note, explanation, IP, role, dependency, etc.')}
+      ${fieldHtml('Chips (comma separated)','detail.chips',(detail.chips || []).join(', '),'text','Optional tags')}
+    </div>`;
+  }
+
+  function bindInspectorFields(container, node) {
+    container.querySelectorAll('[data-key]').forEach((field) => {
+      if (field.dataset.key.startsWith('detail.') || field.dataset.key.startsWith('service.')) return;
+      field.addEventListener('change', () => {
+        if (field.dataset.key === 'labels') {
+          node.labels = field.value.split(',').map((item) => item.trim()).filter(Boolean);
+        } else {
+          setObjectPath(node, field.dataset.key, field.value);
+        }
+        markDirty();
+        render();
+        renderInspector();
+      });
+    });
+  }
+
+  function bindNodeInspectorButtons(container, node) {
+    container.querySelector('#toggleExpand')?.addEventListener('click', () => toggleExpanded(node.id));
+    container.querySelector('#deleteNode')?.addEventListener('click', () => removeNode(node.id));
+
+    container.querySelector('#addDetail')?.addEventListener('click', () => {
+      node.customDetails.push(createDetail('Note', '', []));
+      node.expanded = true;
+      markDirty();
+      render();
+      renderInspector();
+    });
+
+    container.querySelector('#addService')?.addEventListener('click', () => {
+      node.attachedServices = node.attachedServices || [];
+      node.attachedServices.push(createAttachedService('Custom',{status:'Configured',scope:'Specify scope'}));
+      node.expanded = true;
+      markDirty();
+      render();
+      renderInspector();
+    });
+
+    const labelInput = container.querySelector('#nodeLabelInput');
+    const addLabel = () => {
+      if (!labelInput || !addNodeLabel(node, labelInput.value)) return;
+      labelInput.value = '';
+      markDirty();
+      render();
+      renderInspector();
+    };
+    container.querySelector('#addNodeLabel')?.addEventListener('click', addLabel);
+    labelInput?.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') { event.preventDefault(); addLabel(); }
+      if (event.key === 'Escape') labelInput.value = '';
+    });
+    container.querySelectorAll('.remove-node-label').forEach((button) => {
+      button.addEventListener('click', () => {
+        removeNodeLabel(node, button.dataset.label || '');
+        app.activeLabels = app.activeLabels.filter((label) => getNodeLabels(node).includes(label));
+        markDirty();
+        render();
+        renderInspector();
+      });
+    });
+
+    container.querySelectorAll('.attached-service-editor').forEach((editor) => {
+      const service = node.attachedServices.find((item) => item.id === editor.dataset.serviceId);
+      if (!service) return;
+      editor.querySelector('[data-key="service.name"]')?.addEventListener('change', (event) => updateAttachedService(service, 'name', event.target.value));
+      ['status','scope','protocol','port','notes'].forEach((key) => {
+        editor.querySelector(`[data-key="service.${key}"]`)?.addEventListener('change', (event) => updateAttachedService(service, key, event.target.value));
+      });
+      editor.querySelector('.delete-service')?.addEventListener('click', () => {
+        node.attachedServices = node.attachedServices.filter((item) => item.id !== service.id);
+        markDirty();
+        render();
+        renderInspector();
+      });
+    });
+
+    container.querySelectorAll('.custom-detail-editor').forEach((editor) => {
+      const detail = node.customDetails.find((item) => item.id === editor.dataset.detailId);
+      if (!detail) return;
+
+      editor.querySelector('[data-key="detail.title"]')?.addEventListener('change', (event) => updateCustomDetail(detail, 'title', event.target.value));
+      editor.querySelector('[data-key="detail.text"]')?.addEventListener('change', (event) => updateCustomDetail(detail, 'text', event.target.value));
+      editor.querySelector('[data-key="detail.chips"]')?.addEventListener('change', (event) => updateCustomDetail(detail, 'chips', event.target.value.split(',').map((item) => item.trim()).filter(Boolean)));
+      editor.querySelector('.delete-detail')?.addEventListener('click', () => {
+        node.customDetails = node.customDetails.filter((item) => item.id !== detail.id);
+        markDirty();
+        render();
+        renderInspector();
+      });
+    });
+
+    container.querySelector('#addNat')?.addEventListener('click', () => {
+      node.props.natRules = node.props.natRules || [];
+      node.props.natRules.push({name:'New NAT',publicPort:'443',protocol:'TCP',target:'10.10.20.10:443'});
+      markDirty(); render(); renderInspector();
+    });
+
+    container.querySelector('#addRule')?.addEventListener('click', () => {
+      node.props.firewallRules = node.props.firewallRules || [];
+      node.props.firewallRules.push({name:'New Rule',source:'Any',destination:'Any',service:'Any',action:'Allow'});
+      markDirty(); render(); renderInspector();
+    });
+  }
+
+  function updateAttachedService(service, key, value) {
+    service[key] = String(value ?? '');
+    markDirty();
+    render();
+    renderInspector();
+  }
+
+  function updateCustomDetail(detail, key, value) {
+    detail[key] = key === 'chips' ? value : String(value);
+    markDirty();
+    render();
+    renderInspector();
+  }
+
+  function renderConnectionInspector(container, connection) {
+    if (!connection) return;
+    const fromNode = getNode(connection.from);
+    const toNode = getNode(connection.to);
+
+    container.innerHTML = `
+      <h3 class="inspector-title">Connection</h3>
+      <div class="muted connection-path">${escapeHtml(fromNode?.name || '')} → ${escapeHtml(toNode?.name || '')}</div>
+      <div class="field"><label>Type</label><select id="connectionKind">
+        ${['network','replication','dependency','sync','vpn'].map((kind) => `<option value="${kind}">${formatKey(kind)}</option>`).join('')}
+      </select></div>
+      ${fieldHtml('Label','label',connection.label || 'Connection')}
+      ${fieldHtml('Protocol','protocol',connection.protocol || '')}
+      ${fieldHtml('Port','port',connection.port || '')}
+      ${fieldHtml('Schedule','schedule',connection.schedule || '')}
+      ${fieldHtml('Direction','direction',connection.direction || '')}
+      ${textareaHtml('Notes','notes',connection.notes || '')}
+      <div class="actions"><button id="deleteConnection" class="danger">Delete connection</button></div>`;
+
+    $('connectionKind').value = connection.kind;
+    container.querySelector('#connectionKind').addEventListener('change', (event) => {
+      connection.kind = event.target.value;
+      markDirty();
+      render();
+    });
+
+    container.querySelectorAll('[data-key]').forEach((field) => {
+      if (field.dataset.key.startsWith('detail.')) return;
+      field.addEventListener('change', () => {
+        connection[field.dataset.key] = field.value;
+        markDirty();
+        render();
+      });
+    });
+
+    container.querySelector('#deleteConnection').addEventListener('click', () => {
+      app.model.connections = app.model.connections.filter((item) => item.id !== connection.id);
+      app.selected = null;
+      markDirty();
+      render();
+      renderInspector();
+    });
+  }
+
+  function setObjectPath(object, path, value) {
+    const keys = path.split('.');
+    let target = object;
+    for (let i = 0; i < keys.length - 1; i += 1) {
+      if (!target[keys[i]]) target[keys[i]] = {};
+      target = target[keys[i]];
+    }
+
+    const key = keys[keys.length - 1];
+    if (key === 'x' || key === 'y') target[key] = Number(value) || 0;
+    else if (path === 'props.wan' || path === 'props.lan' || path === 'props.roles') target[key] = String(value).split(',').map((item) => item.trim()).filter(Boolean);
+    else if (value === 'true' || value === 'false') target[key] = value === 'true';
+    else target[key] = value;
+  }
+
+  function formatKey(key) {
+    return String(key).replace(/([A-Z])/g, ' $1').replace(/^./, (char) => char.toUpperCase());
+  }
+
+  /* ============================================================
+     VIEWPORT / LAYOUT
+     ============================================================ */
+
+  function fitToCanvas() {
+    if (!app.model.nodes.length) return;
+    measureAllNodes();
+
+    const rect = $('canvas').getBoundingClientRect();
+    const minX = Math.min(...app.model.nodes.map((node) => node.x));
+    const minY = Math.min(...app.model.nodes.map((node) => node.y));
+    const maxX = Math.max(...app.model.nodes.map((node) => node.x + node.w));
+    const maxY = Math.max(...app.model.nodes.map((node) => node.y + node.h));
+    const width = Math.max(1, maxX - minX);
+    const height = Math.max(1, maxY - minY);
+    const scale = Math.max(0.35, Math.min(1.25, (rect.width - 100) / width, (rect.height - 100) / height));
+
+    app.model.viewport.scale = scale;
+    app.model.viewport.x = (rect.width - width * scale) / 2 - minX * scale;
+    app.model.viewport.y = (rect.height - height * scale) / 2 - minY * scale;
+    markDirty();
+    render();
+  }
+
+  function autoLayout() {
+    if (!app.model.nodes.length) return;
+    measureAllNodes();
+
+    const roots = app.model.nodes.filter((node) => !app.model.connections.some((connection) => connection.to === node.id));
+    const visited = new Set();
+    const columnGap = 120;
+    const rowGap = 60;
+    const columnWidths = [];
+    const rows = [];
+
+    function place(node, depth, row) {
+      if (!node || visited.has(node.id)) return;
+      visited.add(node.id);
+      columnWidths[depth] = Math.max(columnWidths[depth] || 0, node.w);
+      rows[depth] = rows[depth] || [];
+      rows[depth].push(node);
+      const children = app.model.connections.filter((connection) => connection.from === node.id).map((connection) => getNode(connection.to)).filter(Boolean);
+      children.forEach((child, index) => place(child, depth + 1, row + index));
+    }
+
+    roots.forEach((root, index) => place(root, 0, index));
+    app.model.nodes.filter((node) => !visited.has(node.id)).forEach((node) => place(node, 0, 0));
+
+    let x = 70;
+    rows.forEach((column) => {
+      let y = 70;
+      column.forEach((node) => {
+        node.x = snap(x);
+        node.y = snap(y);
+        y += node.h + rowGap;
+      });
+      x += (columnWidths[rows.indexOf(column)] || 220) + columnGap;
+    });
+
+    app.model.viewport.scale = 1;
+    app.model.viewport.x = 0;
+    app.model.viewport.y = 0;
+    markDirty();
+    render();
+    toast('Auto layout applied');
+  }
+
+  /* ============================================================
+     FILES / PERSISTENCE
+     ============================================================ */
+
+  function persistDraft() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(app.model)); } catch (error) { /* ignore browser storage errors */ }
+  }
+
+  function restoreDraft() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      if (data?.nodes || data?.project) app.model = normalizeModel(data);
+    } catch (error) { /* ignore invalid draft */ }
+  }
+
+  function downloadJson() {
+    const blob = new Blob([JSON.stringify(app.model, null, 2)], { type:'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${(app.model.project.name || 'infrastructure').replace(/[^a-z0-9_-]+/gi, '_') || 'infrastructure'}.json`;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+    app.dirty = false;
+    persistDraft();
+    $('status').textContent = 'Saved';
+    toast('Saved JSON');
+  }
+
+  function loadJsonFile(file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        app.model = normalizeModel(JSON.parse(reader.result));
+        app.selected = null;
+        app.activeLabels = [];
+        app.dirty = false;
+        render();
+        renderInspector();
+        toast('JSON loaded');
+      } catch (error) {
+        alert(`Could not load JSON: ${error.message}`);
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function exportSvg() {
+    measureAllNodes();
+    const minX = Math.min(0, ...app.model.nodes.map((node) => node.x));
+    const minY = Math.min(0, ...app.model.nodes.map((node) => node.y));
+    const maxX = Math.max(900, ...app.model.nodes.map((node) => node.x + node.w + 120));
+    const maxY = Math.max(650, ...app.model.nodes.map((node) => node.y + node.h + 120));
+    let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${maxX-minX}" height="${maxY-minY}" viewBox="${minX} ${minY} ${maxX-minX} ${maxY-minY}"><rect width="100%" height="100%" fill="#0b1118"/>`;
+
+    app.model.connections.forEach((connection) => {
+      const fromNode = getNode(connection.from);
+      const toNode = getNode(connection.to);
+      if (!fromNode || !toNode) return;
+      svg += `<path d="${buildEdgePath(fromNode,toNode,connection.fromPort,connection.toPort)}" fill="none" stroke="${connection.kind === 'replication' ? '#b38bff' : '#6f89a3'}" stroke-width="2" ${connection.kind === 'replication' ? 'stroke-dasharray="8 6"' : ''}/>`;
+    });
+
+    app.model.nodes.forEach((node) => {
+      const definition = TYPES[node.type] || TYPES.service;
+      svg += `<g transform="translate(${node.x} ${node.y})"><rect width="${node.w}" height="${node.h}" rx="10" fill="#172330" stroke="#3b4f66"/><rect x="10" y="10" width="28" height="28" rx="7" fill="${definition.color}"/><text x="24" y="29" text-anchor="middle" fill="#fff" font-size="12">${escapeHtml(definition.icon)}</text><text x="48" y="24" fill="#e9f0f7" font-size="12" font-weight="700">${escapeXml(node.name)}</text><text x="48" y="39" fill="#8fa1b5" font-size="9">${escapeXml(node.description || definition.desc)}</text></g>`;
+    });
+
+    svg += '</svg>';
+    const blob = new Blob([svg], { type:'image/svg+xml' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'infrastructure.svg';
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+  }
+
+  function escapeXml(value) {
+    return String(value).replace(/[<>&'"]/g, (character) => ({ '<':'&lt;', '>':'&gt;', '&':'&amp;', "'":'&apos;', '"':'&quot;' }[character]));
+  }
+
+  /* ============================================================
+     DIALOGS / EVENTS
+     ============================================================ */
+
+  function openTextDialog(title, label, value, callback) {
+    $('dialogTitle').textContent = title;
+    $('dialogBody').innerHTML = `<div class="field"><label>${escapeHtml(label)}</label><input id="dialogInput" value="${escapeHtml(value || '')}"></div>`;
+    $('dialogBackdrop').classList.add('show');
+    const input = $('dialogInput');
+    input.focus();
+    input.select();
+
+    const close = () => $('dialogBackdrop').classList.remove('show');
+    $('dialogCancel').onclick = close;
+    $('dialogOk').onclick = () => { const value = input.value; close(); callback(value); };
+    input.onkeydown = (event) => {
+      if (event.key === 'Enter') $('dialogOk').click();
+      if (event.key === 'Escape') close();
+    };
+  }
+
+  function bindCanvasEvents() {
+    const canvasWrap = $('canvasWrap');
+
+    canvasWrap.addEventListener('dragover', (event) => event.preventDefault());
+    canvasWrap.addEventListener('drop', (event) => {
+      event.preventDefault();
+      const type = event.dataTransfer.getData('text/plain');
+      if (!TYPES[type]) return;
+      const point = getWorldPoint(event.clientX, event.clientY);
+      addNode(type, point.x - 95, point.y - 40);
+    });
+
+    canvasWrap.addEventListener('mousedown', (event) => {
+      if (event.target.closest('.node') || event.target.closest('.edge')) return;
+      if (event.button === 1 || (event.button === 0 && event.shiftKey)) startPan(event);
+    });
+
+    canvasWrap.addEventListener('wheel', (event) => {
+      event.preventDefault();
+      const rect = $('canvas').getBoundingClientRect();
+      const mouseX = event.clientX - rect.left;
+      const mouseY = event.clientY - rect.top;
+      const worldX = (mouseX - app.model.viewport.x) / app.model.viewport.scale;
+      const worldY = (mouseY - app.model.viewport.y) / app.model.viewport.scale;
+      const nextScale = Math.max(0.3, Math.min(2.2, app.model.viewport.scale * (event.deltaY < 0 ? 1.08 : 0.92)));
+      app.model.viewport.scale = nextScale;
+      app.model.viewport.x = mouseX - worldX * nextScale;
+      app.model.viewport.y = mouseY - worldY * nextScale;
+      render();
+    }, { passive:false });
+
+    canvasWrap.addEventListener('dblclick', (event) => {
+      if (event.target.closest('.node') || event.target.closest('.edge')) return;
+      const point = getWorldPoint(event.clientX, event.clientY);
+      addNode('service', point.x - 95, point.y - 40);
+    });
+  }
+
+  function bindToolbarEvents() {
+    $('newBtn').onclick = () => openTextDialog('New project','Project name','Untitled Infrastructure', (name) => {
+      app.model = blankModel();
+      app.model.project.name = name || 'Untitled Infrastructure';
+      app.selected = null;
+      app.activeLabels = [];
+      app.dirty = false;
+      localStorage.removeItem(STORAGE_KEY);
+      render();
+      renderInspector();
+      toast('New project created');
+    });
+
+    $('saveBtn').onclick = downloadJson;
+    $('loadBtn').onclick = () => $('fileInput').click();
+    $('fileInput').addEventListener('change', (event) => {
+      loadJsonFile(event.target.files?.[0]);
+      event.target.value = '';
+    });
+    $('autoBtn').onclick = autoLayout;
+    $('fitBtn').onclick = fitToCanvas;
+    $('expandBtn').onclick = () => { app.model.nodes.forEach((node) => node.expanded = true); markDirty(); render(); };
+    $('collapseBtn').onclick = () => { app.model.nodes.forEach((node) => node.expanded = false); markDirty(); render(); };
+    $('svgBtn').onclick = exportSvg;
+  }
+
+  function bindKeyboardEvents() {
+    window.addEventListener('keydown', (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
+        event.preventDefault();
+        downloadJson();
+      }
+
+      if (event.key === 'Escape') cancelConnectionDrag();
+
+      if (event.key === 'Delete' && app.selected) {
+        if (app.selected.kind === 'node') removeNode(app.selected.id);
+        else {
+          app.model.connections = app.model.connections.filter((connection) => connection.id !== app.selected.id);
+          app.selected = null;
+          markDirty();
+          render();
+          renderInspector();
+        }
+      }
+    });
+  }
+
+  /* ============================================================
+     STARTUP
+     ============================================================ */
+
+  function init() {
+    buildPalette();
+    bindCanvasEvents();
+    bindToolbarEvents();
+    bindKeyboardEvents();
+    restoreDraft();
+    render();
+    renderInspector();
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
