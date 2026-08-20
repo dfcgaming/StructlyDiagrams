@@ -1,68 +1,69 @@
 # StructlyDiagrams
 
-**StructlyDiagrams** is a lightweight, browser-only tool for designing and documenting IT infrastructure diagrams. Built with plain HTML, CSS, and JavaScript, it runs fully static — no server, no backend, no login required.
+A lightweight, browser-based IT infrastructure diagram builder. Drag-and-drop components, connect them, annotate with details, and export as JSON/SVG/PNG. Runs fully static — no server, no backend, no login required.
 
-Model your environment visually: servers, VLANs, networks, services, dependencies, and notes. Then **save your diagram as JSON** or **import an existing JSON file** to continue editing later. Everything stays in your browser unless you explicitly export it.
+## Features
 
-## What It Does
-
-- Lets you create **IT infrastructure diagrams** such as:
-  - Server racks and host inventories
-  - Network segments and VLANs
-  - Services and their dependencies
-  - Documentation notes attached to nodes
-- Provides a simple UI to:
-  - Add nodes (servers, switches, firewalls, services, subnets, etc.)
-  - Define relationships (e.g., “hosted on”, “connects to”, “depends on”)
-  - Edit labels, IPs, VLAN IDs, roles, and free-form notes
-- Supports **JSON import/export**:
-  - Download your diagram as a `.json` file for backup or version control
-  - Load a previously saved JSON file to edit or extend it
-- Runs as a **static website**:
-  - Open `index.html` locally, or
-  - Host on GitHub Pages, Netlify, Vercel, or any static host
-
-## Who It’s For
-
-- Sysadmins, network engineers, and DevOps teams who need a simple way to visualize their infrastructure.
-- Small to mid-size IT environments that want a lightweight, self-hosted diagram tool.
-- Anyone who prefers file-based workflows (save/load JSON, commit to Git) over SaaS tools.
-
-## Example Use Cases
-
-- Document a small data center or homelab:
-  - Hypervisors → VMs → services
-  - Physical switches → VLANs → subnets
-- Map service dependencies:
-  - Web app → database → cache → message queue
-- Keep an up-to-date network overview:
-  - Core router → distribution switches → access switches → VLANs
-- Add notes to nodes:
-  - IPs, hostnames, credential references, maintenance windows, etc.
+- **Drag-and-drop** infrastructure components: firewalls, servers, VLANs, switches, Active Directory, Microsoft 365, VPNs, and more
+- **Connect nodes** with labeled edges (network, replication, dependency, sync, VPN)
+- **Inspector panel** to edit node properties, labels, attached services, and custom notes
+- **Collapsible branches** — hide downstream nodes without deleting them
+- **Label highlighting** — filter and highlight nodes by label across the diagram
+- **Auto Layout** — one-click tree-based arrangement
+- **Fit to Canvas** — zoom and pan to fit all nodes
+- **Export** as JSON (save/load), SVG, or PNG
+- **Keyboard shortcuts**: Ctrl+S (save), Delete (remove), Escape (cancel)
 
 ## Tech Stack
 
-- **HTML5 + CSS3 + Vanilla JavaScript**
-- No build step required (optional: you can add one later)
-- Easy to extend with:
-  - Custom node types (e.g., “firewall”, “storage”, “Kubernetes cluster”)
-  - Custom fields (IP, VLAN, rack position, tags)
-  - Themes or dark mode
+- **TypeScript** (strict mode)
+- **SCSS** styles
+- **Webpack 5** bundles everything into `builds/index.html`
+- **No frameworks** — vanilla DOM manipulation
+- **Zero runtime dependencies** — all devDependencies only
 
-## Example Workflow
+## Getting Started
 
-1. Open the app in your browser.
-2. Add a top-level node (e.g., “Datacenter” or “HQ Network”).
-3. Add child nodes:
-   - Servers, switches, firewalls, VLANs, services, etc.
-4. Connect nodes to represent relationships:
-   - “Hosted on”, “Connected to”, “Depends on”, etc.
-5. Add notes and metadata to each node.
-6. Click **Save as JSON** to download your diagram.
-7. Later, click **Import JSON** to load and continue editing.
+```bash
+npm install
+npm run build
+```
 
-## Project Goals
+Open `builds/index.html` in your browser.
 
-- Keep the codebase **simple and readable**.
-- Stay **lightweight** and dependency-free where possible.
-- Provide a solid base that others can fork and extend into more advanced IT diagramming tools (e.g., auto-layout, import from CSV, integration with monitoring tools).
+For development with auto-rebuild on file changes:
+
+```bash
+npm run dev
+```
+
+## Project Structure
+
+```
+src/
+├── main.ts              Entry point
+├── types.ts             Interfaces + constants (TYPES, SERVICE_CATALOG, etc.)
+├── state.ts             Shared app state
+├── model.ts             Model CRUD, normalization, persistence
+├── rendering.ts         DOM rendering, inspector, connections
+├── layout.ts            Auto-layout, fit-to-canvas
+├── io.ts                JSON save/load, SVG/PNG export
+├── events.ts            Palette, canvas, toolbar, keyboard events
+└── scss/                Compiled stylesheets
+```
+
+## How It Works
+
+1. **Drag** a component from the left sidebar onto the canvas (or double-click it)
+2. **Select** a node to edit its name, properties, labels, and services in the right inspector
+3. **Connect** nodes by dragging from an output port (blue dot) to another node's input port
+4. **Expand** nodes to see attached services, custom notes, and child details
+5. **Save** your diagram as JSON to continue editing later, or export as SVG/PNG
+
+## Deployment
+
+Push to `main` — GitHub Actions builds and deploys to GitHub Pages automatically via `.github/workflows/static.yml`.
+
+## License
+
+[MIT](LICENSE)
