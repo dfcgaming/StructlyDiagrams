@@ -1,0 +1,22 @@
+:root {
+  --bg: #0b1118;
+  --panel: #111a24;
+  --panel2: #151f2c;
+  --panel3: #1b2736;
+  --border: #2a394b;
+  --border2: #3a4e67;
+  --text: #e9f0f7;
+  --muted: #8fa1b5;
+  --accent: #5cb3ff;
+  --accent2: #86d6ff;
+  --green: #59d39b;
+  --red: #ef7178;
+  --warn: #ffca63;
+  --shadow: 0 14px 50px rgba(0, 0, 0, 0.28);
+  --r: 10px;
+}
+
+$grid-size: 10px;
+$node-min-width: 190px;
+$node-max-width: 420px;
+$node-min-height: 80px;

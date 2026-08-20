@@ -1,0 +1,33 @@
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: none;
+  place-items: center;
+  z-index: 100;
+
+  &.show {
+    display: grid;
+  }
+}
+
+.dialog {
+  width: min(560px, 92vw);
+  background: var(--panel);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 16px;
+
+  h2 {
+    font-size: 15px;
+    margin: 0 0 8px;
+  }
+
+  .footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 7px;
+    margin-top: 14px;
+  }
+}

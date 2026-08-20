@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>IT Infrastructure Sketch Builder</title>
+</head>
+<body>
+  <div id="app">
+    <div class="topbar">
+      <div class="brand">IT Infrastructure Sketch Builder<small>standalone • no server required</small></div>
+      <button id="newBtn">New</button>
+      <button id="saveBtn" class="primary">Save JSON</button>
+      <button id="loadBtn">Load JSON</button>
+      <button id="exampleBtn">Load Example</button>
+      <button id="svgBtn">Export SVG</button>
+      <button id="pngBtn">Export PNG</button>
+      <div class="spacer"></div>
+      <button id="autoBtn">Auto Layout</button>
+      <button id="fitBtn">Fit</button>
+      <button id="expandBtn">Expand All</button>
+      <button id="collapseBtn">Collapse All</button>
+      <button id="connectionsBtn">Connections: On</button>
+      <div class="status" id="status">Ready</div>
+    </div>
+    <div class="main">
+      <aside class="sidebar">
+        <div class="section">
+          <h3>Build from sketch</h3>
+          <div class="help">
+            Drag a component onto the canvas, or double-click it. Select a node to edit it.
+            <b>Drag from the blue output dot to another node's input dot</b> to create a connection.
+          </div>
+        </div>
+        <div class="section">
+          <h3>Network</h3>
+          <div id="networkPalette" class="palette"></div>
+        </div>
+        <div class="section">
+          <h3>Systems</h3>
+          <div id="systemsPalette" class="palette"></div>
+        </div>
+        <div class="section">
+          <h3>Identity & Cloud</h3>
+          <div id="identityPalette" class="palette"></div>
+        </div>
+        <div class="section">
+          <h3>Security & Services</h3>
+          <div id="servicePalette" class="palette"></div>
+        </div>
+      </aside>
+      <section class="canvas-wrap" id="canvasWrap">
+        <div id="canvas">
+          <div id="world">
+            <svg id="edges" class="edges" width="5000" height="5000"></svg>
+            <div id="nodes"></div>
+          </div>
+          <div id="empty" class="empty">
+            <div class="card">
+              <b>Start sketching your infrastructure</b>
+              <p>Drag a component here or double-click one in the palette.</p>
+            </div>
+          </div>
+          <div id="selectionBox" class="selection-box"></div>
+          <div class="canvas-help-badge">Shift+click = multi-select • drag empty canvas = select area • drag selection = move group</div>
+        </div>
+      </section>
+      <aside class="inspector">
+        <div id="inspectorContent" class="inspector-content">
+          <h3 style="margin:0 0 7px;font-size:14px">Inspector</h3>
+          <div class="muted">Select a node or connection to edit it. Shift+click or drag on empty canvas to select multiple nodes.</div>
+        </div>
+      </aside>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+  <div class="dialog-backdrop" id="dialogBackdrop">
+    <div class="dialog">
+      <h2 id="dialogTitle"></h2>
+      <div id="dialogBody"></div>
+      <div class="footer">
+        <button id="dialogCancel">Cancel</button>
+        <button id="dialogOk" class="primary">OK</button>
+      </div>
+    </div>
+  </div>
+  <input id="fileInput" type="file" accept="application/json,.json" hidden>
+</body>
+</html>

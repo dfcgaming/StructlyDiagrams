@@ -1,0 +1,41 @@
+.edges {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.edge {
+  fill: none;
+  stroke: #5e7790;
+  stroke-width: 2.1;
+
+  &.replication {
+    stroke: #b38bff;
+    stroke-dasharray: 8 6;
+  }
+
+  &.selected {
+    stroke: var(--accent2);
+    stroke-width: 3.2;
+  }
+
+  &.preview {
+    stroke: var(--accent2);
+    stroke-width: 3;
+    stroke-dasharray: 6 6;
+    opacity: 0.9;
+  }
+
+  &.collapsed {
+    stroke: #7a8ea3;
+    stroke-dasharray: 7 6;
+  }
+}
+
+.edge-halo {
+  fill: none;
+  stroke: rgba(86, 178, 255, 0.12);
+  stroke-width: 9;
+}

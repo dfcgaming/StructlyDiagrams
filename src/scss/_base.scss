@@ -1,0 +1,130 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: Inter, 'Segoe UI', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+}
+
+button, input, textarea, select {
+  font: inherit;
+}
+
+button {
+  border: 1px solid var(--border2);
+  background: var(--panel2);
+  color: var(--text);
+  border-radius: 7px;
+  padding: 7px 10px;
+  cursor: pointer;
+
+  &:hover {
+    background: #203047;
+  }
+
+  &.primary {
+    background: #194a76;
+    border-color: #2b6ca7;
+  }
+
+  &.danger {
+    background: #4b2025;
+    border-color: #71373f;
+  }
+}
+
+#app {
+  height: 100%;
+  display: grid;
+  grid-template-rows: 56px 1fr;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.field {
+  margin: 0 0 10px;
+
+  label {
+    display: block;
+    color: var(--muted);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 4px;
+  }
+
+  input, textarea, select {
+    width: 100%;
+    background: #0f1720;
+    color: var(--text);
+    border: 1px solid var(--border2);
+    border-radius: 7px;
+    padding: 7px 8px;
+  }
+
+  textarea {
+    min-height: 68px;
+    resize: vertical;
+  }
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+}
+
+.actions {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 9px;
+  padding: 3px 6px;
+  border-radius: 999px;
+  border: 1px solid var(--border2);
+  color: #c4d2df;
+
+  &.green {
+    border-color: #2d6f56;
+    color: #86e1b6;
+  }
+
+  &.yellow {
+    border-color: #6f5e2d;
+    color: #ffd87f;
+  }
+
+  &.red {
+    border-color: #6e343a;
+    color: #ff9b9f;
+  }
+}
+
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--muted);
+  margin: 8px 0;
+  cursor: pointer;
+
+  input[type="checkbox"] {
+    width: auto;
+  }
+}

@@ -1,0 +1,37 @@
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--border);
+  background: #0d151f;
+  z-index: 20;
+}
+
+.brand {
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  margin-right: 10px;
+
+  small {
+    display: block;
+    font-weight: 400;
+    color: var(--muted);
+    font-size: 10px;
+  }
+}
+
+.spacer {
+  flex: 1;
+}
+
+.status {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 0 8px;
+}
+
+.btn-icon {
+  width: 34px;
+  padding: 7px 0;
+}
