@@ -66,4 +66,4 @@ Push to `main` — GitHub Actions builds and deploys to GitHub Pages automatical
 
 ## License
 
-[MIT](LICENSE)
+[LICENSE](LICENSE)
